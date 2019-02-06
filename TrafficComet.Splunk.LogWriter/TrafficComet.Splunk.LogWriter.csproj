@@ -1,0 +1,17 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.7" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\TrafficComet.Abstracts\TrafficComet.Abstracts.csproj" />
+    <ProjectReference Include="..\TrafficComet.Core\TrafficComet.Core.csproj" />
+    <ProjectReference Include="..\TrafficComet.Splunk.LogWriter.Abstracts\TrafficComet.Splunk.LogWriter.Abstracts.csproj" />
+    <ProjectReference Include="..\TrafficComet.Splunk.LogWriter.Documents\TrafficComet.Splunk.LogWriter.Documents.csproj" />
+  </ItemGroup>
+
+</Project>

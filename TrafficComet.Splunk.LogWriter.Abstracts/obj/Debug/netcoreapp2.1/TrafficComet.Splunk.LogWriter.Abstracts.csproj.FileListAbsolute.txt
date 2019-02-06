@@ -1,0 +1,14 @@
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.deps.json
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.dll
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.pdb
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\bin\Debug\netcoreapp2.1\TrafficComet.Abstracts.dll
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Documents.dll
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\bin\Debug\netcoreapp2.1\TrafficComet.Abstracts.pdb
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Documents.pdb
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.csprojAssemblyReference.cache
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.csproj.CoreCompileInputs.cache
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.AssemblyInfoInputs.cache
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.AssemblyInfo.cs
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.csproj.CopyComplete
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.dll
+D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter.Abstracts\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.pdb
