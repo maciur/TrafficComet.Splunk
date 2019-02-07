@@ -4335,51 +4335,48 @@
           "lib/netstandard1.3/System.Xml.XPath.XDocument.dll": {}
         }
       },
-      "TrafficComet/2.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v2.1",
+      "TrafficComet/2.1.0": {
+        "type": "package",
         "dependencies": {
           "Microsoft.AspNetCore": "2.1.0",
-          "TrafficComet.Abstracts": "2.0.0",
+          "TrafficComet.Abstracts": "2.1.0",
           "TrafficComet.JsonLogWriter": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/TrafficComet.dll": {}
+          "lib/netcoreapp2.1/TrafficComet.Core.dll": {}
         },
         "runtime": {
-          "bin/placeholder/TrafficComet.dll": {}
+          "lib/netcoreapp2.1/TrafficComet.Core.dll": {}
         }
       },
-      "TrafficComet.Abstracts/2.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v2.1",
+      "TrafficComet.Abstracts/2.1.0": {
+        "type": "package",
         "compile": {
-          "bin/placeholder/TrafficComet.Abstracts.dll": {}
+          "lib/netcoreapp2.1/TrafficComet.Abstracts.dll": {}
         },
         "runtime": {
-          "bin/placeholder/TrafficComet.Abstracts.dll": {}
+          "lib/netcoreapp2.1/TrafficComet.Abstracts.dll": {}
         }
       },
       "TrafficComet.JsonLogWriter/1.0.0": {
-        "type": "project",
-        "framework": ".NETCoreApp,Version=v2.1",
+        "type": "package",
         "dependencies": {
-          "Microsoft.AspNetCore": "2.1.0",
-          "TrafficComet.Abstracts": "2.0.0"
+          "Microsoft.AspNetCore": "2.0.4",
+          "TrafficComet.Abstracts": "1.0.0"
         },
         "compile": {
-          "bin/placeholder/TrafficComet.JsonLogWriter.dll": {}
+          "lib/netcoreapp2.0/TrafficComet.JsonLogWriter.dll": {}
         },
         "runtime": {
-          "bin/placeholder/TrafficComet.JsonLogWriter.dll": {}
+          "lib/netcoreapp2.0/TrafficComet.JsonLogWriter.dll": {}
         }
       },
-      "TrafficComet.Splunk.LogWriter.Abstracts/1.0.0": {
+      "TrafficComet.Splunk.LogWriter.Abstracts/2.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.1",
         "dependencies": {
-          "TrafficComet.Abstracts": "2.0.0",
-          "TrafficComet.Splunk.LogWriter.Documents": "1.0.0"
+          "TrafficComet.Abstracts": "2.1.0",
+          "TrafficComet.Splunk.LogWriter.Documents": "2.0.0"
         },
         "compile": {
           "bin/placeholder/TrafficComet.Splunk.LogWriter.Abstracts.dll": {}
@@ -4388,7 +4385,7 @@
           "bin/placeholder/TrafficComet.Splunk.LogWriter.Abstracts.dll": {}
         }
       },
-      "TrafficComet.Splunk.LogWriter.Documents/1.0.0": {
+      "TrafficComet.Splunk.LogWriter.Documents/2.0.0": {
         "type": "project",
         "framework": ".NETCoreApp,Version=v2.1",
         "dependencies": {
@@ -11779,27 +11776,47 @@
         "system.xml.xpath.xdocument.nuspec"
       ]
     },
-    "TrafficComet/2.0.0": {
-      "type": "project",
-      "path": "../TrafficComet.Core/TrafficComet.Core.csproj",
-      "msbuildProject": "../TrafficComet.Core/TrafficComet.Core.csproj"
+    "TrafficComet/2.1.0": {
+      "sha512": "RbPpQMLB6akTfgCxskjHiGkLq8FhDjUGoR7Tqd8Xi5v4o4WUizFsuVoq+OhzghBDmbPK8BgBp2Oruutom57+iQ==",
+      "type": "package",
+      "path": "trafficcomet/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netcoreapp2.1/TrafficComet.Core.dll",
+        "trafficcomet.2.1.0.nupkg.sha512",
+        "trafficcomet.nuspec"
+      ]
     },
-    "TrafficComet.Abstracts/2.0.0": {
-      "type": "project",
-      "path": "../TrafficComet.Abstracts/TrafficComet.Abstracts.csproj",
-      "msbuildProject": "../TrafficComet.Abstracts/TrafficComet.Abstracts.csproj"
+    "TrafficComet.Abstracts/2.1.0": {
+      "sha512": "FkqDf5B3/ky0y24XRedUUHqgwYWV+JPN+62P4MBwGHVjJdJ96GtGXkEqpwSmmbnQ0hQ2ZtQs8NXaDQOa7syHMw==",
+      "type": "package",
+      "path": "trafficcomet.abstracts/2.1.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "lib/netcoreapp2.1/TrafficComet.Abstracts.dll",
+        "trafficcomet.abstracts.2.1.0.nupkg.sha512",
+        "trafficcomet.abstracts.nuspec"
+      ]
     },
     "TrafficComet.JsonLogWriter/1.0.0": {
-      "type": "project",
-      "path": "../TrafficComet.JsonLogWriter/TrafficComet.JsonLogWriter.csproj",
-      "msbuildProject": "../TrafficComet.JsonLogWriter/TrafficComet.JsonLogWriter.csproj"
+      "sha512": "fATw8mtKN6zX0pzKgjOV88x8Ym44HQuFQne9z3Epy5nAkqTRJ3D0VE+qcLmqoGkiYf5Lr+53eGWACfnsBnJGug==",
+      "type": "package",
+      "path": "trafficcomet.jsonlogwriter/1.0.0",
+      "files": [
+        ".nupkg.metadata",
+        "lib/netcoreapp2.0/TrafficComet.JsonLogWriter.dll",
+        "trafficcomet.jsonlogwriter.1.0.0.nupkg.sha512",
+        "trafficcomet.jsonlogwriter.nuspec"
+      ]
     },
-    "TrafficComet.Splunk.LogWriter.Abstracts/1.0.0": {
+    "TrafficComet.Splunk.LogWriter.Abstracts/2.0.0": {
       "type": "project",
       "path": "../TrafficComet.Splunk.LogWriter.Abstracts/TrafficComet.Splunk.LogWriter.Abstracts.csproj",
       "msbuildProject": "../TrafficComet.Splunk.LogWriter.Abstracts/TrafficComet.Splunk.LogWriter.Abstracts.csproj"
     },
-    "TrafficComet.Splunk.LogWriter.Documents/1.0.0": {
+    "TrafficComet.Splunk.LogWriter.Documents/2.0.0": {
       "type": "project",
       "path": "../TrafficComet.Splunk.LogWriter.Documents/TrafficComet.Splunk.LogWriter.Documents.csproj",
       "msbuildProject": "../TrafficComet.Splunk.LogWriter.Documents/TrafficComet.Splunk.LogWriter.Documents.csproj"
@@ -11810,10 +11827,10 @@
       "Microsoft.AspNetCore.App >= 2.1.7",
       "Microsoft.NETCore.App >= 2.1.0",
       "Newtonsoft.Json >= 12.0.1",
-      "TrafficComet >= 2.0.0",
-      "TrafficComet.Abstracts >= 2.0.0",
-      "TrafficComet.Splunk.LogWriter.Abstracts >= 1.0.0",
-      "TrafficComet.Splunk.LogWriter.Documents >= 1.0.0"
+      "TrafficComet >= 2.1.0",
+      "TrafficComet.Abstracts >= 2.1.0",
+      "TrafficComet.Splunk.LogWriter.Abstracts >= 2.0.0",
+      "TrafficComet.Splunk.LogWriter.Documents >= 2.0.0"
     ]
   },
   "packageFolders": {
@@ -11821,13 +11838,13 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "2.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter\\TrafficComet.Splunk.LogWriter.csproj",
+      "projectUniqueName": "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter\\TrafficComet.Splunk.LogWriter.csproj",
       "projectName": "TrafficComet.Splunk.LogWriter",
-      "projectPath": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter\\TrafficComet.Splunk.LogWriter.csproj",
+      "projectPath": "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter\\TrafficComet.Splunk.LogWriter.csproj",
       "packagesPath": "C:\\Users\\WorkStation\\.nuget\\packages\\",
-      "outputPath": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter\\obj\\",
+      "outputPath": "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
@@ -11847,17 +11864,11 @@
       "frameworks": {
         "netcoreapp2.1": {
           "projectReferences": {
-            "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Abstracts\\TrafficComet.Abstracts.csproj": {
-              "projectPath": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Abstracts\\TrafficComet.Abstracts.csproj"
+            "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter.Abstracts\\TrafficComet.Splunk.LogWriter.Abstracts.csproj": {
+              "projectPath": "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter.Abstracts\\TrafficComet.Splunk.LogWriter.Abstracts.csproj"
             },
-            "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Core\\TrafficComet.Core.csproj": {
-              "projectPath": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Core\\TrafficComet.Core.csproj"
-            },
-            "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter.Abstracts\\TrafficComet.Splunk.LogWriter.Abstracts.csproj": {
-              "projectPath": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter.Abstracts\\TrafficComet.Splunk.LogWriter.Abstracts.csproj"
-            },
-            "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter.Documents\\TrafficComet.Splunk.LogWriter.Documents.csproj": {
-              "projectPath": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter.Documents\\TrafficComet.Splunk.LogWriter.Documents.csproj"
+            "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter.Documents\\TrafficComet.Splunk.LogWriter.Documents.csproj": {
+              "projectPath": "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter.Documents\\TrafficComet.Splunk.LogWriter.Documents.csproj"
             }
           }
         }
@@ -11884,6 +11895,14 @@
           "Newtonsoft.Json": {
             "target": "Package",
             "version": "[12.0.1, )"
+          },
+          "TrafficComet": {
+            "target": "Package",
+            "version": "[2.1.0, )"
+          },
+          "TrafficComet.Abstracts": {
+            "target": "Package",
+            "version": "[2.1.0, )"
           }
         },
         "imports": [

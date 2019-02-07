@@ -20,3 +20,19 @@ D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter\obj\Debug\
 D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.csproj.CopyComplete
 D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.dll
 D:\AxaDevGit-master\TrafficComet-master\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.pdb
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.deps.json
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.runtimeconfig.json
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.runtimeconfig.dev.json
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.dll
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.pdb
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.dll
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Documents.dll
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Abstracts.pdb
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\bin\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.Documents.pdb
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.csprojAssemblyReference.cache
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.csproj.CoreCompileInputs.cache
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.AssemblyInfoInputs.cache
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.AssemblyInfo.cs
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.csproj.CopyComplete
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.dll
+C:\Projecty GitHub\TrafficComet.Splunk\TrafficComet.Splunk.LogWriter\obj\Debug\netcoreapp2.1\TrafficComet.Splunk.LogWriter.pdb

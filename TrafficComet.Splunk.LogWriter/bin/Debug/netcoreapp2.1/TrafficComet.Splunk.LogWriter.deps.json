@@ -1,19 +1,19 @@
 {
   "runtimeTarget": {
     "name": ".NETCoreApp,Version=v2.1",
-    "signature": "9dffe6225ced6e727bcd5b8b882b862660d1ba5f"
+    "signature": "6f9e2ccbf40757246e562329d1bf45261ff70636"
   },
   "compilationOptions": {},
   "targets": {
     ".NETCoreApp,Version=v2.1": {
-      "TrafficComet.Splunk.LogWriter/1.0.0": {
+      "TrafficComet.Splunk.LogWriter/2.0.0": {
         "dependencies": {
           "Microsoft.NETCore.App": "2.1.0",
           "Newtonsoft.Json": "12.0.1",
-          "TrafficComet": "2.0.0",
-          "TrafficComet.Abstracts": "2.0.0",
-          "TrafficComet.Splunk.LogWriter.Abstracts": "1.0.0",
-          "TrafficComet.Splunk.LogWriter.Documents": "1.0.0"
+          "TrafficComet": "2.1.0",
+          "TrafficComet.Abstracts": "2.1.0",
+          "TrafficComet.Splunk.LogWriter.Abstracts": "2.0.0",
+          "TrafficComet.Splunk.LogWriter.Documents": "2.0.0"
         },
         "runtime": {
           "TrafficComet.Splunk.LogWriter.dll": {}
@@ -53,38 +53,47 @@
           }
         }
       },
-      "TrafficComet/2.0.0": {
+      "TrafficComet/2.1.0": {
         "dependencies": {
-          "TrafficComet.Abstracts": "2.0.0",
+          "TrafficComet.Abstracts": "2.1.0",
           "TrafficComet.JsonLogWriter": "1.0.0"
         },
         "runtime": {
-          "TrafficComet.Core.dll": {}
+          "lib/netcoreapp2.1/TrafficComet.Core.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
+          }
         }
       },
-      "TrafficComet.Abstracts/2.0.0": {
+      "TrafficComet.Abstracts/2.1.0": {
         "runtime": {
-          "TrafficComet.Abstracts.dll": {}
+          "lib/netcoreapp2.1/TrafficComet.Abstracts.dll": {
+            "assemblyVersion": "2.1.0.0",
+            "fileVersion": "2.1.0.0"
+          }
         }
       },
       "TrafficComet.JsonLogWriter/1.0.0": {
         "dependencies": {
-          "TrafficComet.Abstracts": "2.0.0"
+          "TrafficComet.Abstracts": "2.1.0"
         },
         "runtime": {
-          "TrafficComet.JsonLogWriter.dll": {}
+          "lib/netcoreapp2.0/TrafficComet.JsonLogWriter.dll": {
+            "assemblyVersion": "1.0.0.0",
+            "fileVersion": "1.0.0.0"
+          }
         }
       },
-      "TrafficComet.Splunk.LogWriter.Abstracts/1.0.0": {
+      "TrafficComet.Splunk.LogWriter.Abstracts/2.0.0": {
         "dependencies": {
-          "TrafficComet.Abstracts": "2.0.0",
-          "TrafficComet.Splunk.LogWriter.Documents": "1.0.0"
+          "TrafficComet.Abstracts": "2.1.0",
+          "TrafficComet.Splunk.LogWriter.Documents": "2.0.0"
         },
         "runtime": {
           "TrafficComet.Splunk.LogWriter.Abstracts.dll": {}
         }
       },
-      "TrafficComet.Splunk.LogWriter.Documents/1.0.0": {
+      "TrafficComet.Splunk.LogWriter.Documents/2.0.0": {
         "dependencies": {
           "Newtonsoft.Json": "12.0.1"
         },
@@ -95,7 +104,7 @@
     }
   },
   "libraries": {
-    "TrafficComet.Splunk.LogWriter/1.0.0": {
+    "TrafficComet.Splunk.LogWriter/2.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
@@ -156,27 +165,33 @@
       "path": "newtonsoft.json/12.0.1",
       "hashPath": "newtonsoft.json.12.0.1.nupkg.sha512"
     },
-    "TrafficComet/2.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
+    "TrafficComet/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-RbPpQMLB6akTfgCxskjHiGkLq8FhDjUGoR7Tqd8Xi5v4o4WUizFsuVoq+OhzghBDmbPK8BgBp2Oruutom57+iQ==",
+      "path": "trafficcomet/2.1.0",
+      "hashPath": "trafficcomet.2.1.0.nupkg.sha512"
     },
-    "TrafficComet.Abstracts/2.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
+    "TrafficComet.Abstracts/2.1.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-FkqDf5B3/ky0y24XRedUUHqgwYWV+JPN+62P4MBwGHVjJdJ96GtGXkEqpwSmmbnQ0hQ2ZtQs8NXaDQOa7syHMw==",
+      "path": "trafficcomet.abstracts/2.1.0",
+      "hashPath": "trafficcomet.abstracts.2.1.0.nupkg.sha512"
     },
     "TrafficComet.JsonLogWriter/1.0.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-fATw8mtKN6zX0pzKgjOV88x8Ym44HQuFQne9z3Epy5nAkqTRJ3D0VE+qcLmqoGkiYf5Lr+53eGWACfnsBnJGug==",
+      "path": "trafficcomet.jsonlogwriter/1.0.0",
+      "hashPath": "trafficcomet.jsonlogwriter.1.0.0.nupkg.sha512"
+    },
+    "TrafficComet.Splunk.LogWriter.Abstracts/2.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""
     },
-    "TrafficComet.Splunk.LogWriter.Abstracts/1.0.0": {
-      "type": "project",
-      "serviceable": false,
-      "sha512": ""
-    },
-    "TrafficComet.Splunk.LogWriter.Documents/1.0.0": {
+    "TrafficComet.Splunk.LogWriter.Documents/2.0.0": {
       "type": "project",
       "serviceable": false,
       "sha512": ""

@@ -11,6 +11,7 @@ using TrafficComet.Splunk.LogWriter.Abstracts.Processor;
 using TrafficComet.Splunk.LogWriter.Abstracts.Queues;
 using TrafficComet.Splunk.LogWriter.Abstracts.Writers;
 using TrafficComet.Splunk.LogWriter.Config;
+using TrafficComet.Splunk.LogWriter.Consts;
 using TrafficComet.Splunk.LogWriter.Extensions;
 using TrafficComet.Splunk.LogWriter.Factories;
 using TrafficComet.Splunk.LogWriter.Http;
@@ -20,80 +21,83 @@ using TrafficComet.Splunk.LogWriter.Writers;
 
 namespace TrafficComet.Splunk.LogWriter.Installer
 {
-    public static class SplunkLogWriterInstaller
-    {
-        private const string COLLECTORS_SELECTOR = "Collectors";
-        private const string FOLDER_COLLECTOR_SELECTOR = "Folder";
-        private const string HTTP_COLLECTOR_SELECTOR = "Http";
-        private const string SPLUNK_SELECTOR = "Splunk";
+	public static class SplunkLogWriterInstaller
+	{
+		public static IServiceCollection AddTrafficCommetSplunkLogWriter(this IServiceCollection services,
+			IConfiguration configuration)
+		{
+			var splunkConfigSection = configuration
+				.GetSection($"{TrafficCometConstValues.RootConfigName}:{ConfigurationSelectors.SPLUNK_SELECTOR}");
 
-        public static IServiceCollection AddTrafficCommetSplunkLogWriter(this IServiceCollection services,
-            IConfiguration configuration)
-        {
-            var splunkCollectorsConfigSection = configuration
-                .GetSection($"{TrafficCometConstValues.RootConfigName}:{SPLUNK_SELECTOR}:{COLLECTORS_SELECTOR}");
+			if (splunkConfigSection == null)
+				throw new NullReferenceException(nameof(splunkConfigSection));
 
-            if (splunkCollectorsConfigSection == null)
-                throw new NullReferenceException(nameof(splunkCollectorsConfigSection));
+			var splunkCollectorsConfigSection = splunkConfigSection.GetSection(ConfigurationSelectors.COLLECTORS_SELECTOR);
 
-            var httpCollectorSection = splunkCollectorsConfigSection.GetSection(HTTP_COLLECTOR_SELECTOR);
+			if (splunkCollectorsConfigSection == null)
+				throw new NullReferenceException(nameof(splunkCollectorsConfigSection));
 
-            if (httpCollectorSection == null)
-                throw new NullReferenceException(nameof(httpCollectorSection));
+			var httpCollectorSection = splunkCollectorsConfigSection.GetSection(ConfigurationSelectors.HTTP_COLLECTOR_SELECTOR);
 
-            services.AddHttpClient<ISplunkHttpCollectorClient, SplunkHttpCollectorClient>(client =>
-            {
-                var httpCollectorConfig = httpCollectorSection.Get<SplunkHttpCollectorConfig>();
+			if (httpCollectorSection == null)
+				throw new NullReferenceException(nameof(httpCollectorSection));
 
-                if (httpCollectorConfig == null)
-                    throw new NullReferenceException(nameof(httpCollectorConfig));
+			services.AddHttpClient<ISplunkHttpCollectorClient, SplunkHttpCollectorClient>(client =>
+			{
+				var httpCollectorConfig = httpCollectorSection.Get<SplunkHttpCollectorConfig>();
 
-                client.BaseAddress = new Uri(httpCollectorConfig.Url);
-                client.AddSplunkAuthHeader(httpCollectorConfig.Token);
-            });
+				if (httpCollectorConfig == null)
+					throw new NullReferenceException(nameof(httpCollectorConfig));
 
-            services.AddHttpClient<ISplunkHttpCollectorHealthClient, SplunkHttpCollectorHealthClient>(client =>
-            {
-                var httpCollectorConfig = httpCollectorSection.Get<SplunkHttpCollectorConfig>();
+				client.BaseAddress = new Uri(httpCollectorConfig.Url);
+				client.AddSplunkAuthHeader(httpCollectorConfig.Token);
+			});
 
-                if (httpCollectorConfig == null)
-                    throw new NullReferenceException(nameof(httpCollectorConfig));
+			services.AddHttpClient<ISplunkHttpCollectorHealthClient, SplunkHttpCollectorHealthClient>(client =>
+			{
+				var httpCollectorConfig = httpCollectorSection.Get<SplunkHttpCollectorConfig>();
 
-                client.BaseAddress = new Uri(httpCollectorConfig.Url);
-            });
+				if (httpCollectorConfig == null)
+					throw new NullReferenceException(nameof(httpCollectorConfig));
 
-            services.TryAddSingleton
-                <IHttpRequestMessageSplunkFactory, HttpRequestMessageSplunkFactory>();
+				client.BaseAddress = new Uri(httpCollectorConfig.Url);
+			});
 
-            services.TryAddSingleton
-                <IHtttpCollectorResponseSplunkFactory, HtttpCollectorResponseSplunkFactory>();
+			services.TryAddSingleton
+				<IHttpRequestMessageSplunkFactory, HttpRequestMessageSplunkFactory>();
 
-            services.TryAddSingleton
-                <IWebEventDocumentFactory, WebEventDocumentFactory>();
+			services.TryAddSingleton
+				<IHtttpCollectorResponseSplunkFactory, HtttpCollectorResponseSplunkFactory>();
 
-            services.TryAddSingleton
-                <IWebEventBodyDocumentFactory, WebEventBodyDocumentFactory>();
+			services.TryAddSingleton
+				<IWebEventDocumentFactory, WebEventDocumentFactory>();
 
-            services.TryAddSingleton
-                <IIndexEventContainerDocumentFactory, IndexEventContainerDocumentFactory>();
+			services.TryAddSingleton
+				<IWebEventBodyDocumentFactory, WebEventBodyDocumentFactory>();
 
-            services.TryAddTransient<ITrafficLogWriter, SplunkLogWriter>();
+			services.TryAddSingleton
+				<IIndexEventContainerDocumentFactory, IndexEventContainerDocumentFactory>();
 
-            services.TryAddTransient<IWebEventDocumentWriter, WebEventDocumentWriter>();
+			services.TryAddTransient<ITrafficLogWriter, SplunkLogWriter>();
 
-            services.TryAddTransient<IWebEventBodyDocumentWriter, WebEventBodyDocumentWriter>();
+			services.TryAddTransient<IWebEventDocumentWriter, WebEventDocumentWriter>();
 
-            services.TryAddTransient<ISplunkIndexEventProcessor, SplunkIndexEventProcessor>();
+			services.TryAddTransient<IWebEventBodyDocumentWriter, WebEventBodyDocumentWriter>();
 
-            services.AddHostedService<ExecutorSaveLogTasksHostedService>();
+			services.TryAddTransient<ISplunkIndexEventProcessor, SplunkIndexEventProcessor>();
 
-            services.AddHostedService<SplunkHttpCollectorHealthCheckerHostedService>();
+			services.AddHostedService<ExecutorSaveLogTasksHostedService>();
 
-            services.AddSingleton<IBackgroundSaveLogTasksQueue, BackgroundSaveLogTasksQueue>();
+			services.AddHostedService<SplunkHttpCollectorHealthCheckerHostedService>();
 
-            return services
-                .Configure<SplunkFolderCollectorConfig>(splunkCollectorsConfigSection.GetSection(FOLDER_COLLECTOR_SELECTOR))
-                .Configure<SplunkHttpCollectorConfig>(httpCollectorSection);
-        }
-    }
+			services.AddSingleton<IBackgroundSaveLogTasksQueue, BackgroundSaveLogTasksQueue>();
+
+			return services
+				.Configure<ExecutorSaveLogTasksConfig>(splunkConfigSection
+					.GetSection($"{ConfigurationSelectors.HOSTED_SERVICES_SELECTOR}:{ConfigurationSelectors.EXECUTOR_SELECTOR}"))
+				.Configure<SplunkFolderCollectorConfig>(splunkCollectorsConfigSection
+					.GetSection(ConfigurationSelectors.FOLDER_COLLECTOR_SELECTOR))
+				.Configure<SplunkHttpCollectorConfig>(httpCollectorSection);
+		}
+	}
 }

@@ -740,13 +740,13 @@
     "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
-    "version": "1.0.0",
+    "version": "2.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter.Documents\\TrafficComet.Splunk.LogWriter.Documents.csproj",
+      "projectUniqueName": "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter.Documents\\TrafficComet.Splunk.LogWriter.Documents.csproj",
       "projectName": "TrafficComet.Splunk.LogWriter.Documents",
-      "projectPath": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter.Documents\\TrafficComet.Splunk.LogWriter.Documents.csproj",
+      "projectPath": "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter.Documents\\TrafficComet.Splunk.LogWriter.Documents.csproj",
       "packagesPath": "C:\\Users\\WorkStation\\.nuget\\packages\\",
-      "outputPath": "C:\\Projecty GitHub\\TrafficComet\\TrafficComet.Splunk.LogWriter.Documents\\obj\\",
+      "outputPath": "C:\\Projecty GitHub\\TrafficComet.Splunk\\TrafficComet.Splunk.LogWriter.Documents\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
