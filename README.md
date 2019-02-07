@@ -48,7 +48,7 @@ public class Startup
             "ResponseIndexPrefix": "response"
           },
           "Folder": {
-            "Path": "Where Traffic Coment will save json log files when Http Collector is down",
+            "Path": "Where Traffic Coment will save json log files when Splunk or Http Collector is down",
             "RootFolder": "root",
             "RequestsFolder": "requests",
             "ResponsesFolder": "responses"
@@ -64,8 +64,19 @@ public class Startup
   }
 ``` 
   
-### Splunk Configuration
+## Splunk Configuration
+### Indexes
 Create a new 3 indexes in Splunk: 
-  - root index - index should have same name like value in Splunk.Collectors.Http.Index property from config file, 
-  - second index for requests logs - {index-root-name}-{value from RequestsIndexPrefix from config file} 
-  - third index for responses logs - {index-root-name}-{value from ResponseIndexPrefix from config file} 
+  - Root index - index should have same name like value in Splunk.Collectors.Http.Index property from config file, 
+  - Second index for requests logs - {index-root-name}-{value from RequestsIndexPrefix from config file} 
+  - Third index for responses logs - {index-root-name}-{value from ResponseIndexPrefix from config file} 
+
+### HEC
+Create and configure HEC in Splunk https://docs.splunk.com/Documentation/Splunk/7.2.3/Data/UsetheHTTPEventCollector
+
+### Files & Directories
+Configure Splunk to load logs from Directory https://docs.splunk.com/Documentation/Splunk/7.2.3/Data/MonitorfilesanddirectorieswithSplunkWeb
+
+- Load logs from Splunk.Collectors.Folder.Path to root index
+- Load logs from Splunk.Collectors.Folder.RequestsFolder to {index-root-name}-{value from RequestsIndexPrefix from config file} 
+- Load logs from Splunk.Collectors.Folder.ResponsesFolder to {index-root-name}-{value from ResponseIndexPrefix from config file} 
