@@ -1,0 +1,21 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.7" />
+    <PackageReference Include="TrafficComet.Abstracts" Version="2.1.0" />
+    <PackageReference Include="TrafficComet" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\TrafficComet.Splunk.LogWriter\TrafficComet.Splunk.LogWriter.csproj" />
+  </ItemGroup>
+
+</Project>

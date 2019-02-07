@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.168
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrafficComet.Splunk.LogWriter", "TrafficComet.Splunk.LogWriter\TrafficComet.Splunk.LogWriter.csproj", "{61BFE5EA-967C-4708-A0B9-38F069906C58}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrafficComet.Splunk.LogWriter.Abstracts", "TrafficComet.Splunk.LogWriter.Abstracts\TrafficComet.Splunk.LogWriter.Abstracts.csproj", "{3822F009-2A4E-48FC-B38A-9507F4880713}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrafficComet.Splunk.LogWriter.Documents", "TrafficComet.Splunk.LogWriter.Documents\TrafficComet.Splunk.LogWriter.Documents.csproj", "{A458AD11-4A50-4128-A83E-48258FED7DDB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{74AA5709-6AFE-4266-9334-6EE27CCFCA4C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SimpleWebApi", "SimpleWebApi", "{BCA5A2FE-3E67-4285-9E0D-6416C6A3C3FB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TrafficComet.WebApiTest", "samples\SimpleWebApi\TrafficComet.WebApiTest\TrafficComet.WebApiTest.csproj", "{EE3138D4-C4E2-40AD-83E6-EA99E23C474D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{61BFE5EA-967C-4708-A0B9-38F069906C58}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{61BFE5EA-967C-4708-A0B9-38F069906C58}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{61BFE5EA-967C-4708-A0B9-38F069906C58}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{61BFE5EA-967C-4708-A0B9-38F069906C58}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3822F009-2A4E-48FC-B38A-9507F4880713}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3822F009-2A4E-48FC-B38A-9507F4880713}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3822F009-2A4E-48FC-B38A-9507F4880713}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3822F009-2A4E-48FC-B38A-9507F4880713}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A458AD11-4A50-4128-A83E-48258FED7DDB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A458AD11-4A50-4128-A83E-48258FED7DDB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A458AD11-4A50-4128-A83E-48258FED7DDB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A458AD11-4A50-4128-A83E-48258FED7DDB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EE3138D4-C4E2-40AD-83E6-EA99E23C474D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EE3138D4-C4E2-40AD-83E6-EA99E23C474D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EE3138D4-C4E2-40AD-83E6-EA99E23C474D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EE3138D4-C4E2-40AD-83E6-EA99E23C474D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{BCA5A2FE-3E67-4285-9E0D-6416C6A3C3FB} = {74AA5709-6AFE-4266-9334-6EE27CCFCA4C}
+		{EE3138D4-C4E2-40AD-83E6-EA99E23C474D} = {BCA5A2FE-3E67-4285-9E0D-6416C6A3C3FB}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {1A368FC6-267F-4EF0-9BB1-6B8F75090E8D}
+	EndGlobalSection
+EndGlobal
