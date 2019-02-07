@@ -7,7 +7,7 @@
     <PackageLicenseUrl>https://github.com/maciur/TrafficComet.Splunk</PackageLicenseUrl>
     <PackageProjectUrl>https://github.com/maciur/TrafficComet.Splunk</PackageProjectUrl>
     <RepositoryUrl>https://github.com/maciur/TrafficComet.Splunk</RepositoryUrl>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
     <Description>Plugin for TrafficComet to use Splunk as storage for traffic logs</Description>
   </PropertyGroup>
   <ItemGroup>

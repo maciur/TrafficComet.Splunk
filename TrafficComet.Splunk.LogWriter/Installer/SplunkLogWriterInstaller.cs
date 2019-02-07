@@ -3,7 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using TrafficComet.Abstracts.Writers;
-using TrafficComet.Core.Consts;
+using TrafficComet.Core;
 using TrafficComet.Core.Services;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
 using TrafficComet.Splunk.LogWriter.Abstracts.Http;
@@ -18,29 +18,34 @@ using TrafficComet.Splunk.LogWriter.Http;
 using TrafficComet.Splunk.LogWriter.Processor;
 using TrafficComet.Splunk.LogWriter.Queues;
 using TrafficComet.Splunk.LogWriter.Writers;
+using TrafficConfigurationSelectors = TrafficComet.Abstracts.Consts.ConfigurationSelectors;
 
 namespace TrafficComet.Splunk.LogWriter.Installer
 {
 	public static class SplunkLogWriterInstaller
 	{
-		public static IServiceCollection AddTrafficCommetSplunkLogWriter(this IServiceCollection services,
+		public static IServiceCollection AddTrafficCometSplunkLogWriter(this IServiceCollection services,
 			IConfiguration configuration)
 		{
-			var splunkConfigSection = configuration
-				.GetSection($"{TrafficCometConstValues.RootConfigName}:{ConfigurationSelectors.SPLUNK_SELECTOR}");
+			var splunkConfigSectionPath = string.Join(':', TrafficConfigurationSelectors.ROOT,
+				TrafficConfigurationSelectors.WRITERS, ConfigurationSelectors.SPLUNK);
+
+			var splunkConfigSection = configuration.GetSection(splunkConfigSectionPath);
 
 			if (splunkConfigSection == null)
 				throw new NullReferenceException(nameof(splunkConfigSection));
 
-			var splunkCollectorsConfigSection = splunkConfigSection.GetSection(ConfigurationSelectors.COLLECTORS_SELECTOR);
+			var splunkCollectorsConfigSection = splunkConfigSection.GetSection(ConfigurationSelectors.COLLECTORS);
 
 			if (splunkCollectorsConfigSection == null)
 				throw new NullReferenceException(nameof(splunkCollectorsConfigSection));
 
-			var httpCollectorSection = splunkCollectorsConfigSection.GetSection(ConfigurationSelectors.HTTP_COLLECTOR_SELECTOR);
+			var httpCollectorSection = splunkCollectorsConfigSection.GetSection(ConfigurationSelectors.HTTP_COLLECTOR);
 
 			if (httpCollectorSection == null)
 				throw new NullReferenceException(nameof(httpCollectorSection));
+
+			services.AddTrafficComet(configuration);
 
 			services.AddHttpClient<ISplunkHttpCollectorClient, SplunkHttpCollectorClient>(client =>
 			{
@@ -94,9 +99,9 @@ namespace TrafficComet.Splunk.LogWriter.Installer
 
 			return services
 				.Configure<ExecutorSaveLogTasksConfig>(splunkConfigSection
-					.GetSection($"{ConfigurationSelectors.HOSTED_SERVICES_SELECTOR}:{ConfigurationSelectors.EXECUTOR_SELECTOR}"))
+					.GetSection($"{ConfigurationSelectors.HOSTED_SERVICES}:{ConfigurationSelectors.EXECUTOR}"))
 				.Configure<SplunkFolderCollectorConfig>(splunkCollectorsConfigSection
-					.GetSection(ConfigurationSelectors.FOLDER_COLLECTOR_SELECTOR))
+					.GetSection(ConfigurationSelectors.FOLDER_COLLECTOR))
 				.Configure<SplunkHttpCollectorConfig>(httpCollectorSection);
 		}
 	}

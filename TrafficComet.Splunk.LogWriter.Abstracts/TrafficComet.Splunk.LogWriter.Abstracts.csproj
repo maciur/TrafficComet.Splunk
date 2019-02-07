@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>2.0.0</Version>
+    <Version>2.1.0</Version>
     <Copyright>Maciej Kacprzak</Copyright>
     <Company>Maciej Kacprzak</Company>
     <PackageLicenseUrl>https://github.com/maciur/TrafficComet.Splunk</PackageLicenseUrl>
@@ -12,7 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TrafficComet.Abstracts" Version="2.1.0" />
+    <PackageReference Include="TrafficComet.Abstracts" Version="2.2.0" />
   </ItemGroup>
   
   <ItemGroup>

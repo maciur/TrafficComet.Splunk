@@ -10,8 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.7" />
-    <PackageReference Include="TrafficComet.Abstracts" Version="2.1.0" />
-    <PackageReference Include="TrafficComet" Version="2.1.0" />
+    <PackageReference Include="TrafficComet" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
