@@ -5,6 +5,7 @@ using System;
 using TrafficComet.Abstracts.Writers;
 using TrafficComet.Core;
 using TrafficComet.Core.Services;
+using TrafficComet.Splunk.LogWriter.Abstracts.Containers;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
 using TrafficComet.Splunk.LogWriter.Abstracts.Http;
 using TrafficComet.Splunk.LogWriter.Abstracts.Processor;
@@ -12,6 +13,7 @@ using TrafficComet.Splunk.LogWriter.Abstracts.Queues;
 using TrafficComet.Splunk.LogWriter.Abstracts.Writers;
 using TrafficComet.Splunk.LogWriter.Config;
 using TrafficComet.Splunk.LogWriter.Consts;
+using TrafficComet.Splunk.LogWriter.Containers;
 using TrafficComet.Splunk.LogWriter.Extensions;
 using TrafficComet.Splunk.LogWriter.Factories;
 using TrafficComet.Splunk.LogWriter.Http;
@@ -24,8 +26,14 @@ namespace TrafficComet.Splunk.LogWriter.Installer
 {
 	public static class SplunkLogWriterInstaller
 	{
-		public static IServiceCollection AddTrafficCometSplunkLogWriter(this IServiceCollection services,
+		public static IServiceCollection AddTrafficCometSplunkLogWriter(this IServiceCollection services, 
 			IConfiguration configuration)
+		{
+			return services.AddTrafficCometSplunkLogWriter(configuration, false);
+		}
+
+		public static IServiceCollection AddTrafficCometSplunkLogWriter(this IServiceCollection services,
+			IConfiguration configuration, bool readTraceIdAndClientIfFromHeader)
 		{
 			var splunkConfigSectionPath = string.Join(':', TrafficConfigurationSelectors.ROOT,
 				TrafficConfigurationSelectors.WRITERS, ConfigurationSelectors.SPLUNK);
@@ -45,7 +53,7 @@ namespace TrafficComet.Splunk.LogWriter.Installer
 			if (httpCollectorSection == null)
 				throw new NullReferenceException(nameof(httpCollectorSection));
 
-			services.AddTrafficComet(configuration);
+			services.AddTrafficComet(configuration, readTraceIdAndClientIfFromHeader);
 
 			services.AddHttpClient<ISplunkHttpCollectorClient, SplunkHttpCollectorClient>(client =>
 			{
@@ -90,6 +98,8 @@ namespace TrafficComet.Splunk.LogWriter.Installer
 			services.TryAddTransient<IWebEventBodyDocumentWriter, WebEventBodyDocumentWriter>();
 
 			services.TryAddTransient<ISplunkIndexEventProcessor, SplunkIndexEventProcessor>();
+
+			services.TryAddTransient<ISplunkHttpClientDependenciesContainer, SplunkHttpClientDependenciesContainer>();
 
 			services.AddHostedService<ExecutorSaveLogTasksHostedService>();
 

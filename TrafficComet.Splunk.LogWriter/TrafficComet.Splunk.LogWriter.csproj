@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>2.1.0</Version>
+    <Version>2.3.0</Version>
     <Company>Maciej Kacprzak</Company>
     <Copyright>Maciej Kacprzak</Copyright>
     <PackageLicenseUrl>https://github.com/maciur/TrafficComet.Splunk</PackageLicenseUrl>
@@ -13,7 +13,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.7" />
-    <PackageReference Include="TrafficComet" Version="2.2.0" />
+    <PackageReference Include="TrafficComet" Version="2.3.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\TrafficComet.Splunk.LogWriter.Abstracts\TrafficComet.Splunk.LogWriter.Abstracts.csproj" />

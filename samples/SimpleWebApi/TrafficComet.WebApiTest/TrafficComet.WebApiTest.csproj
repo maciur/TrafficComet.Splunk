@@ -10,7 +10,7 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" Version="2.1.7" />
-    <PackageReference Include="TrafficComet" Version="2.2.0" />
+    <PackageReference Include="TrafficComet.Splunk.LogWriter" Version="2.2.0" />
   </ItemGroup>
 
   <ItemGroup>
