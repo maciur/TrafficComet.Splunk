@@ -1,6 +1,8 @@
-﻿using System;
+﻿using Microsoft.Extensions.Options;
+using System;
 using TrafficComet.Abstracts;
 using TrafficComet.Abstracts.Accessors;
+using TrafficComet.Core.Configs;
 using TrafficComet.Splunk.LogWriter.Abstracts.Containers;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
 using TrafficComet.Splunk.LogWriter.Abstracts.Writers;
@@ -19,9 +21,14 @@ namespace TrafficComet.Splunk.LogWriter.Containers
 
 		public ITrafficCometMiddlewaresAccessor TrafficCometMiddlewaresAccessor { get; }
 
-		public SplunkHttpClientDependenciesContainer(IClientIdGenerator clientIdGenerator,
+        public IOptions<TrafficCometMiddlewareConfig> MiddlewareConfig { get; }
+
+        public bool StopLogging => MiddlewareConfig?.Value?.StopLogging ?? false;
+
+        public SplunkHttpClientDependenciesContainer(IClientIdGenerator clientIdGenerator,
 			ITraceIdGenerator traceIdGenerator, IWebEventBodyDocumentFactory webEventBodyDocumentFactory,
-			IWebEventBodyDocumentWriter webEventBodyDocumentWriter, ITrafficCometMiddlewaresAccessor trafficCometMiddlewaresAccessor)
+			IWebEventBodyDocumentWriter webEventBodyDocumentWriter, ITrafficCometMiddlewaresAccessor trafficCometMiddlewaresAccessor,
+            IOptions<TrafficCometMiddlewareConfig> trafficCometMiddlewareConfig)
 		{
 			ClientIdGenerator = clientIdGenerator
 				?? throw new ArgumentNullException(nameof(clientIdGenerator));
@@ -37,6 +44,10 @@ namespace TrafficComet.Splunk.LogWriter.Containers
 
 			TrafficCometMiddlewaresAccessor = trafficCometMiddlewaresAccessor
 				?? throw new ArgumentNullException(nameof(trafficCometMiddlewaresAccessor));
-		}
+
+            MiddlewareConfig = trafficCometMiddlewareConfig
+                ?? throw new ArgumentNullException(nameof(MiddlewareConfig));
+
+        }
 	}
 }

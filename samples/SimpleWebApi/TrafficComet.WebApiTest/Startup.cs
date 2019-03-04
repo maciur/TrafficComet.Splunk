@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using System.IO.Compression;
 using TrafficComet.Core;
 using TrafficComet.Splunk.LogWriter.Installer;
+using TrafficComet.WebApiTest.Mocks;
 
 namespace TrafficComet.WebApiTest
 {
@@ -24,6 +25,7 @@ namespace TrafficComet.WebApiTest
 			services.AddMvc();
 			services.AddTrafficCometSplunkLogWriter(Configuration);
 			services.Configure<GzipCompressionProviderOptions>((opts) => opts.Level = CompressionLevel.Optimal);
+            services.AddHttpClient<MockSplunkHttpClient>();
 			services.AddResponseCompression((opts) =>
 			{
 				opts.EnableForHttps = true;

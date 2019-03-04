@@ -12,5 +12,6 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Containers
 		IWebEventBodyDocumentFactory WebEventBodyDocumentFactory { get; }
 		IWebEventBodyDocumentWriter WebEventBodyDocumentWriter { get; }
 		ITrafficCometMiddlewaresAccessor TrafficCometMiddlewaresAccessor { get; }
-	}
+        bool StopLogging { get; }
+    }
 }

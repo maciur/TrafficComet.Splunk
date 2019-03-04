@@ -11,185 +11,195 @@ using TrafficComet.Splunk.LogWriter.Documents;
 
 namespace TrafficComet.Splunk.LogWriter.Abstracts.Http
 {
-	public abstract class SplunkHttpClient
-	{
-		protected HttpClient HttpClient { get; }
-		protected virtual string[] IgnoreHeaders { get; set; }
-		protected abstract JsonSerializerSettings JsonSerializerSettings { get; }
-		protected abstract string SourceName { get; }
-		protected ISplunkHttpClientDependenciesContainer Dependencies { get; }
+    public abstract class SplunkHttpClient
+    {
+        protected ISplunkHttpClientDependenciesContainer Dependencies { get; }
+        protected HttpClient HttpClient { get; }
+        protected virtual string[] IgnoreHeaders { get; set; }
+        protected abstract JsonSerializerSettings JsonSerializerSettings { get; }
+        protected abstract string SourceName { get; }
 
-		public SplunkHttpClient(HttpClient httpClient, ISplunkHttpClientDependenciesContainer splunkHttpClientDependenciesContainer)
-		{
-			HttpClient = httpClient
-				?? throw new ArgumentNullException(nameof(httpClient));
+        public SplunkHttpClient(ISplunkHttpClientDependenciesContainer splunkHttpClientDependenciesContainer,
+            HttpClient httpClient)
+        {
+            Dependencies = splunkHttpClientDependenciesContainer
+                ?? throw new ArgumentNullException(nameof(splunkHttpClientDependenciesContainer));
 
-			Dependencies = splunkHttpClientDependenciesContainer
-				?? throw new ArgumentNullException(nameof(splunkHttpClientDependenciesContainer));
+            HttpClient = httpClient
+                ?? throw new ArgumentNullException(nameof(httpClient));
 
-			IgnoreHeaders = new string[] { "authorization" };
-		}
+            IgnoreHeaders = new string[] { "authorization" };
+        }
 
-		public Task<TValue> GetJsonAsync<TValue>(string url, bool ignoreRequest = false)
-		{
-			_ = Dependencies.ClientIdGenerator.TryGenerateClientId(out string clientId);
-			_ = Dependencies.TraceIdGenerator.TryGenerateTraceId(out string traceId);
+        public Task<TValue> GetJsonAsync<TValue>(string url, bool ignoreRequest = false)
+        {
+            string clientId = null;
+            string traceId = null;
 
-			return SendJsonAsync<TValue>(CreateBaseHttpRequestMessage(HttpMethod.Get, url),
-				clientId, traceId, ignoreRequest);
-		}
+            if (!Dependencies.StopLogging)
+            {
+                _ = Dependencies.ClientIdGenerator.TryGenerateClientId(out clientId);
+                _ = Dependencies.TraceIdGenerator.TryGenerateTraceId(out traceId);
+            }
 
-		public Task<TResponse> PostJsonAsync<TResponse>(string url, object requestObject, bool ignoreRequest = false)
-		{
-			return SendJsonAsync<TResponse>(HttpMethod.Post, url, requestObject, ignoreRequest);
-		}
+            return SendJsonAsync<TValue>(CreateBaseHttpRequestMessage(HttpMethod.Get, url),
+                clientId, traceId, ignoreRequest);
+        }
 
-		public Task<TResponse> PutJsonAsync<TResponse>(string url, object requestObject, bool ignoreRequest = false)
-		{
-			return SendJsonAsync<TResponse>(HttpMethod.Put, url, requestObject, ignoreRequest);
-		}
+        public Task<TResponse> PostJsonAsync<TResponse>(string url, object requestObject, bool ignoreRequest = false)
+        {
+            return SendJsonAsync<TResponse>(HttpMethod.Post, url, requestObject, ignoreRequest);
+        }
 
-		public Task<TResponse> SendJsonAsync<TResponse>(HttpMethod httpMethod, string url,
-			object requestObject, bool ignoreRequest = false)
-		{
-			if (string.IsNullOrEmpty(url))
-				throw new ArgumentNullException(nameof(url));
+        public Task<TResponse> PutJsonAsync<TResponse>(string url, object requestObject, bool ignoreRequest = false)
+        {
+            return SendJsonAsync<TResponse>(HttpMethod.Put, url, requestObject, ignoreRequest);
+        }
 
-			if (requestObject == null)
-				throw new ArgumentNullException(nameof(requestObject));
+        public Task<TResponse> SendJsonAsync<TResponse>(HttpMethod httpMethod, string url,
+            object requestObject, bool ignoreRequest = false)
+        {
+            if (string.IsNullOrEmpty(url))
+                throw new ArgumentNullException(nameof(url));
 
-			var httpRequestMessage = CreateBaseHttpRequestMessage(httpMethod, url);
+            if (requestObject == null)
+                throw new ArgumentNullException(nameof(requestObject));
 
-			if (httpRequestMessage == null)
-				throw new NullReferenceException(nameof(httpRequestMessage));
+            var httpRequestMessage = CreateBaseHttpRequestMessage(httpMethod, url);
 
-			string clientId = null;
-			string traceId = null;
+            if (httpRequestMessage == null)
+                throw new NullReferenceException(nameof(httpRequestMessage));
 
-			if (requestObject != null)
-			{
-				_ = Dependencies.ClientIdGenerator.TryGenerateClientId(out clientId);
-				_ = Dependencies.TraceIdGenerator.TryGenerateTraceId(out traceId);
+            string clientId = null;
+            string traceId = null;
 
-				if (!ignoreRequest && !string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(traceId))
-				{
-					WriteDocument(CreateRequestWebEventDocument(httpRequestMessage,
-						requestObject, clientId, traceId), IndexEventSplunkType.RequestBody);
-				}
+            if (requestObject != null)
+            {
+                if (!Dependencies.StopLogging)
+                {
+                    _ = Dependencies.ClientIdGenerator.TryGenerateClientId(out clientId);
+                    _ = Dependencies.TraceIdGenerator.TryGenerateTraceId(out traceId);
+                }
 
-				httpRequestMessage.Content = new JsonContent(requestObject);
-			}
+                if (!ignoreRequest && !string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(traceId))
+                {
+                    WriteDocument(CreateRequestWebEventDocument(httpRequestMessage,
+                        requestObject, clientId, traceId), IndexEventSplunkType.RequestBody);
+                }
 
-			return SendJsonAsync<TResponse>(httpRequestMessage, clientId, traceId);
-		}
+                httpRequestMessage.Content = new JsonContent(requestObject);
+            }
 
-		protected virtual WebEventBodyDocument AddRequestHeaders<THeaders>(WebEventBodyDocument webEventDocument, THeaders headers)
-			where THeaders : HttpHeaders
-		{
-			if (webEventDocument == null)
-				throw new ArgumentException(nameof(webEventDocument));
+            return SendJsonAsync<TResponse>(httpRequestMessage, clientId, traceId);
+        }
 
-			if (headers != null && headers.Any())
-			{
-				webEventDocument.CustomParams = headers.Where(x => !IgnoreHeaders.Contains(x.Key.ToLowerInvariant()))
-					.Select(x => new KeyValueDocument
-					{
-						Name = x.Key,
-						Value = x.Value.FirstOrDefault()
-					}).ToArray();
-			}
+        protected virtual WebEventBodyDocument AddRequestHeaders<THeaders>(WebEventBodyDocument webEventDocument, THeaders headers)
+            where THeaders : HttpHeaders
+        {
+            if (webEventDocument == null)
+                throw new ArgumentException(nameof(webEventDocument));
 
-			return webEventDocument;
-		}
+            if (headers != null && headers.Any())
+            {
+                webEventDocument.CustomParams = headers.Where(x => !IgnoreHeaders.Contains(x.Key.ToLowerInvariant()))
+                    .Select(x => new KeyValueDocument
+                    {
+                        Name = x.Key,
+                        Value = x.Value.FirstOrDefault()
+                    }).ToArray();
+            }
 
-		protected abstract HttpRequestMessage CreateBaseHttpRequestMessage(HttpMethod httpMethod,
-					string url);
+            return webEventDocument;
+        }
 
-		protected virtual WebEventBodyDocument CreateRequestWebEventDocument(HttpRequestMessage httpRequestMessage,
-			dynamic requestBody, string clientId, string traceId)
-		{
-			if (httpRequestMessage == null)
-				throw new ArgumentNullException(nameof(httpRequestMessage));
+        protected abstract HttpRequestMessage CreateBaseHttpRequestMessage(HttpMethod httpMethod,
+                    string url);
 
-			var fullUrl = new Uri(HttpClient.BaseAddress, httpRequestMessage.RequestUri);
+        protected virtual WebEventBodyDocument CreateRequestWebEventDocument(HttpRequestMessage httpRequestMessage,
+            dynamic requestBody, string clientId, string traceId)
+        {
+            if (httpRequestMessage == null)
+                throw new ArgumentNullException(nameof(httpRequestMessage));
 
-			return CreateWebEventDocument(requestBody, fullUrl.ToString(), httpRequestMessage.Headers, clientId, traceId);
-		}
+            var fullUrl = new Uri(HttpClient.BaseAddress, httpRequestMessage.RequestUri);
 
-		protected virtual WebEventBodyDocument CreateResponseWebEventDocument(HttpResponseMessage httpResponseMessage,
-			dynamic requestBody, string fullUrl, string clientId, string traceId)
-		{
-			if (httpResponseMessage == null)
-				throw new ArgumentNullException(nameof(httpResponseMessage));
+            return CreateWebEventDocument(requestBody, fullUrl.ToString(), httpRequestMessage.Headers, clientId, traceId);
+        }
 
-			WebEventBodyDocument webEventBodyDocument = CreateWebEventDocument(requestBody, fullUrl,
-				httpResponseMessage.Headers, clientId, traceId);
+        protected virtual WebEventBodyDocument CreateResponseWebEventDocument(HttpResponseMessage httpResponseMessage,
+            dynamic requestBody, string fullUrl, string clientId, string traceId)
+        {
+            if (httpResponseMessage == null)
+                throw new ArgumentNullException(nameof(httpResponseMessage));
 
-			webEventBodyDocument.Status = (int)httpResponseMessage.StatusCode;
-			return webEventBodyDocument;
-		}
+            WebEventBodyDocument webEventBodyDocument = CreateWebEventDocument(requestBody, fullUrl,
+                httpResponseMessage.Headers, clientId, traceId);
 
-		protected virtual WebEventBodyDocument CreateWebEventDocument<THeaders>(dynamic requestBody,
-			string fullUrl, THeaders headers, string clientId, string traceId)
-			where THeaders : HttpHeaders
-		{
-			if (requestBody == null)
-				throw new ArgumentNullException(nameof(requestBody));
+            webEventBodyDocument.Status = (int)httpResponseMessage.StatusCode;
+            return webEventBodyDocument;
+        }
 
-			if (string.IsNullOrEmpty(fullUrl))
-				throw new ArgumentNullException(nameof(requestBody));
+        protected virtual WebEventBodyDocument CreateWebEventDocument<THeaders>(dynamic requestBody,
+            string fullUrl, THeaders headers, string clientId, string traceId)
+            where THeaders : HttpHeaders
+        {
+            if (requestBody == null)
+                throw new ArgumentNullException(nameof(requestBody));
 
-			WebEventBodyDocument webEventDocument = Dependencies.WebEventBodyDocumentFactory
-				.Create(fullUrl, requestBody, clientId, traceId);
+            if (string.IsNullOrEmpty(fullUrl))
+                throw new ArgumentNullException(nameof(requestBody));
 
-			if (webEventDocument == null)
-				throw new NullReferenceException(nameof(webEventDocument));
+            WebEventBodyDocument webEventDocument = Dependencies.WebEventBodyDocumentFactory
+                .Create(fullUrl, requestBody, clientId, traceId);
 
-			return AddRequestHeaders(webEventDocument, headers);
-		}
+            if (webEventDocument == null)
+                throw new NullReferenceException(nameof(webEventDocument));
 
-		protected async Task<TValue> HandleJsonResponseAsync<TValue>(HttpResponseMessage httpResponseMessage, bool ignoreRequest = false)
-		{
-			if (httpResponseMessage == null)
-				throw new NullReferenceException(nameof(httpResponseMessage));
+            return AddRequestHeaders(webEventDocument, headers);
+        }
 
-			var stringResponse = await httpResponseMessage.Content.ReadAsStringAsync();
+        protected async Task<TValue> HandleJsonResponseAsync<TValue>(HttpResponseMessage httpResponseMessage, bool ignoreRequest = false)
+        {
+            if (httpResponseMessage == null)
+                throw new NullReferenceException(nameof(httpResponseMessage));
 
-			if (string.IsNullOrEmpty(stringResponse))
-				throw new NullReferenceException(nameof(stringResponse));
+            var stringResponse = await httpResponseMessage.Content.ReadAsStringAsync();
 
-			return JsonConvert.DeserializeObject<TValue>(stringResponse, JsonSerializerSettings);
-		}
+            if (string.IsNullOrEmpty(stringResponse))
+                throw new NullReferenceException(nameof(stringResponse));
 
-		protected async Task<TResponse> SendJsonAsync<TResponse>(HttpRequestMessage httpRequestMessage, string clientId,
-			string traceId, bool ignoreRequest = false)
-		{
-			if (httpRequestMessage == null)
-				throw new ArgumentNullException(nameof(httpRequestMessage));
+            return JsonConvert.DeserializeObject<TValue>(stringResponse, JsonSerializerSettings);
+        }
 
-			var responseHttpMessage = await HttpClient.SendAsync(httpRequestMessage);
+        protected async Task<TResponse> SendJsonAsync<TResponse>(HttpRequestMessage httpRequestMessage, string clientId,
+            string traceId, bool ignoreRequest = false)
+        {
+            if (httpRequestMessage == null)
+                throw new ArgumentNullException(nameof(httpRequestMessage));
 
-			if (responseHttpMessage == null)
-				throw new NullReferenceException(nameof(responseHttpMessage));
+            var responseHttpMessage = await HttpClient.SendAsync(httpRequestMessage);
 
-			var responseObject = await HandleJsonResponseAsync<TResponse>(responseHttpMessage);
+            if (responseHttpMessage == null)
+                throw new NullReferenceException(nameof(responseHttpMessage));
 
-			if (!ignoreRequest && responseObject != null && !string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(traceId))
-			{
-				WriteDocument(
-					CreateResponseWebEventDocument(responseHttpMessage, responseObject,
-						httpRequestMessage.RequestUri.ToString(), clientId, traceId), IndexEventSplunkType.ResponseBody);
-			}
+            var responseObject = await HandleJsonResponseAsync<TResponse>(responseHttpMessage);
 
-			return responseObject;
-		}
+            if (!ignoreRequest && responseObject != null && !string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(traceId))
+            {
+                WriteDocument(
+                    CreateResponseWebEventDocument(responseHttpMessage, responseObject,
+                        httpRequestMessage.RequestUri.ToString(), clientId, traceId), IndexEventSplunkType.ResponseBody);
+            }
 
-		protected virtual void WriteDocument(WebEventBodyDocument webEventDocument, IndexEventSplunkType indexEventSplunkType)
-		{
-			if (webEventDocument == null)
-				throw new ArgumentNullException(nameof(webEventDocument));
+            return responseObject;
+        }
 
-			Dependencies.WebEventBodyDocumentWriter.Write(webEventDocument, SourceName, indexEventSplunkType);
-		}
-	}
+        protected virtual void WriteDocument(WebEventBodyDocument webEventDocument, IndexEventSplunkType indexEventSplunkType)
+        {
+            if (webEventDocument == null)
+                throw new ArgumentNullException(nameof(webEventDocument));
+
+            Dependencies.WebEventBodyDocumentWriter.Write(webEventDocument, SourceName, indexEventSplunkType);
+        }
+    }
 }

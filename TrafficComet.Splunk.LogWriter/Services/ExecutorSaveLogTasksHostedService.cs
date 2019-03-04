@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 using TrafficComet.Splunk.LogWriter.Abstracts.Queues;
 using TrafficComet.Splunk.LogWriter.Config;
 
-namespace TrafficComet.Core.Services
+namespace TrafficComet.Splunk.LogWriter.Services
 {
     public class ExecutorSaveLogTasksHostedService : BackgroundService
     {
