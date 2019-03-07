@@ -21,14 +21,14 @@ namespace TrafficComet.Splunk.LogWriter.Containers
 
 		public ITrafficCometMiddlewaresAccessor TrafficCometMiddlewaresAccessor { get; }
 
-        public IOptions<TrafficCometMiddlewareConfig> MiddlewareConfig { get; }
+        public IOptionsSnapshot<TrafficCometMiddlewareConfig> MiddlewareConfig { get; }
 
         public bool StopLogging => MiddlewareConfig?.Value?.StopLogging ?? false;
 
         public SplunkHttpClientDependenciesContainer(IClientIdGenerator clientIdGenerator,
 			ITraceIdGenerator traceIdGenerator, IWebEventBodyDocumentFactory webEventBodyDocumentFactory,
 			IWebEventBodyDocumentWriter webEventBodyDocumentWriter, ITrafficCometMiddlewaresAccessor trafficCometMiddlewaresAccessor,
-            IOptions<TrafficCometMiddlewareConfig> trafficCometMiddlewareConfig)
+            IOptionsSnapshot<TrafficCometMiddlewareConfig> trafficCometMiddlewareConfig)
 		{
 			ClientIdGenerator = clientIdGenerator
 				?? throw new ArgumentNullException(nameof(clientIdGenerator));
