@@ -72,10 +72,15 @@ namespace TrafficComet.Splunk.LogWriter.Processor
 
         protected ValueTask<bool> SaveLogByFolderCollector(IndexEventContainerDocument indexEventSplunkContract)
         {
-            string logsFolderName = GetLogFolderName(indexEventSplunkContract.Index);
+            string pathToLogFolder = Path.Combine(SplunkFolderCollectorPath, 
+                GetLogFolderName(indexEventSplunkContract.Index));
 
-            string pathToLogFile = Path.Combine(SplunkFolderCollectorPath, logsFolderName,
-                $"{Guid.NewGuid()}-{indexEventSplunkContract.Source}.json");
+            if (!Directory.Exists(pathToLogFolder))
+            {
+                Directory.CreateDirectory(pathToLogFolder);
+            }
+
+            string pathToLogFile = Path.Combine(pathToLogFolder, $"{Guid.NewGuid()}-{indexEventSplunkContract.Source}.json");
 
             File.WriteAllText(pathToLogFile,
                 JsonConvert.SerializeObject(indexEventSplunkContract.Event, JsonSerializerSettings),
