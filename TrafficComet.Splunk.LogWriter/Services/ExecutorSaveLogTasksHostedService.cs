@@ -13,17 +13,17 @@ namespace TrafficComet.Splunk.LogWriter.Services
     public class ExecutorSaveLogTasksHostedService : BackgroundService
     {
         protected IBackgroundSaveLogTasksQueue TaskQueue { get; }
-		protected IOptions<ExecutorSaveLogTasksConfig> Config { get; }  
+		protected IOptionsMonitor<ExecutorSaveLogTasksConfig> Config { get; }  
 		protected ILogger<ExecutorSaveLogTasksHostedService> Logger { get; }
 
-		protected const int DEFAULT_TASKS_AT_ONES = 5;
+        protected const int DEFAULT_TASKS_AT_ONES = 5;
 
-		protected int TasksAtOnes => Config.Value?.TasksAtOnce <= 0 ?
-			DEFAULT_TASKS_AT_ONES : Config.Value.TasksAtOnce;
+        protected int TasksAtOnes => Config.CurrentValue?.TasksAtOnce <= 0 ?
+            DEFAULT_TASKS_AT_ONES : Config.CurrentValue.TasksAtOnce;
 
 		public ExecutorSaveLogTasksHostedService(IBackgroundSaveLogTasksQueue taskQueue,
             ILogger<ExecutorSaveLogTasksHostedService> logger,
-			IOptions<ExecutorSaveLogTasksConfig> executorSaveLogTasksConfig)
+            IOptionsMonitor<ExecutorSaveLogTasksConfig> executorSaveLogTasksConfig)
         {
             TaskQueue = taskQueue
 				?? throw new ArgumentNullException(nameof(taskQueue));
@@ -31,7 +31,7 @@ namespace TrafficComet.Splunk.LogWriter.Services
 			Logger = logger
 				?? throw new ArgumentNullException(nameof(logger));
 
-			if (executorSaveLogTasksConfig == null || executorSaveLogTasksConfig.Value == null)
+			if (executorSaveLogTasksConfig == null || executorSaveLogTasksConfig.CurrentValue == null)
 				throw new ArgumentNullException(nameof(executorSaveLogTasksConfig));
 
 			Config = executorSaveLogTasksConfig;

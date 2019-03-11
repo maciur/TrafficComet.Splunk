@@ -16,11 +16,11 @@ namespace TrafficComet.Splunk.LogWriter.Services
         protected const int WAIT_SECONDS_AND_CHECK_AGAIN = 5;
         protected ISplunkHttpCollectorHealthClient HttpClient { get; }
         protected ILogger<SplunkHttpCollectorHealthCheckerHostedService> Logger { get; }
-        protected IOptions<TrafficCometMiddlewareConfig> TrafficCometConfig { get; }
+        protected IOptionsMonitor<TrafficCometMiddlewareConfig> TrafficCometConfig { get; }
 
         public SplunkHttpCollectorHealthCheckerHostedService(ISplunkHttpCollectorHealthClient splunkHttpCollectorHealthClient,
             ILogger<SplunkHttpCollectorHealthCheckerHostedService> logger,
-            IOptions<TrafficCometMiddlewareConfig> trafficCometConfig)
+            IOptionsMonitor<TrafficCometMiddlewareConfig> trafficCometConfig)
         {
             HttpClient = splunkHttpCollectorHealthClient
                 ?? throw new ArgumentNullException(nameof(splunkHttpCollectorHealthClient));
@@ -28,7 +28,7 @@ namespace TrafficComet.Splunk.LogWriter.Services
             Logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
 
-            if (trafficCometConfig?.Value == null)
+            if (trafficCometConfig?.CurrentValue == null)
                 throw new ArgumentNullException(nameof(trafficCometConfig));
 
             TrafficCometConfig = trafficCometConfig;
@@ -57,7 +57,7 @@ namespace TrafficComet.Splunk.LogWriter.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            if (!TrafficCometConfig.Value.StopLogging)
+            if (!TrafficCometConfig.CurrentValue.StopLogging)
             {
                 Logger.LogDebug("Executor Save Log Tasks Hosted Service is starting.");
 
