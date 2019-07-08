@@ -17,6 +17,7 @@ public class Startup
 	{
 		services.AddMvc();
 		services.AddTrafficCometSplunkLogWriter(Configuration);
+		services.AddTrafficCometSplunkHealthChecker();
 	}
 
 	public void Configure(IApplicationBuilder app, IHostingEnvironment env)
