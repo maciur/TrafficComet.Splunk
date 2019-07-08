@@ -23,8 +23,9 @@ namespace TrafficComet.WebApiTest
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddMvc();
-			services.AddTrafficCometSplunkLogWriter(Configuration);
-			services.Configure<GzipCompressionProviderOptions>((opts) => opts.Level = CompressionLevel.Optimal);
+			services.AddTrafficCometSplunk(Configuration);
+            services.AddTrafficCometSplunkHealthChecker();
+            services.Configure<GzipCompressionProviderOptions>((opts) => opts.Level = CompressionLevel.Optimal);
             services.AddHttpClient<MockSplunkHttpClient>();
 			services.AddResponseCompression((opts) =>
 			{

@@ -5,7 +5,7 @@ using TrafficComet.Splunk.LogWriter.Abstracts.Http;
 
 namespace TrafficComet.WebApiTest.Mocks
 {
-    public class MockSplunkHttpClient : SplunkHttpClient
+    public class MockSplunkHttpClient : TrafficCometSplunkHttpClient
     {
         public MockSplunkHttpClient(ISplunkHttpClientDependenciesContainer splunkHttpClientDependenciesContainer,
             HttpClient httpClient) : base(splunkHttpClientDependenciesContainer, httpClient)

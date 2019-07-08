@@ -11,7 +11,7 @@ using TrafficComet.Splunk.LogWriter.Documents;
 
 namespace TrafficComet.Splunk.LogWriter.Abstracts.Http
 {
-    public abstract class SplunkHttpClient
+    public abstract class TrafficCometSplunkHttpClient
     {
         protected ISplunkHttpClientDependenciesContainer Dependencies { get; }
         protected HttpClient HttpClient { get; }
@@ -19,7 +19,7 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Http
         protected abstract JsonSerializerSettings JsonSerializerSettings { get; }
         protected abstract string SourceName { get; }
 
-        public SplunkHttpClient(ISplunkHttpClientDependenciesContainer splunkHttpClientDependenciesContainer,
+        public TrafficCometSplunkHttpClient(ISplunkHttpClientDependenciesContainer splunkHttpClientDependenciesContainer,
             HttpClient httpClient)
         {
             Dependencies = splunkHttpClientDependenciesContainer

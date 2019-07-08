@@ -8,13 +8,13 @@ using TrafficComet.Splunk.LogWriter.Documents;
 
 namespace TrafficComet.Splunk.LogWriter.Http
 {
-    public class SplunkHttpCollectorClient : ISplunkHttpCollectorClient
+    public class TrafficCometInternalHttpClient : ITrafficCometInternalHttpClient
     {
         protected HttpClient HttpClient { get; }
         protected IHtttpCollectorResponseSplunkFactory HttpCollectorResponseFactory { get; }
         protected IHttpRequestMessageSplunkFactory HttpRequestMessageFactory { get; }
 
-        public SplunkHttpCollectorClient(HttpClient httpClient,
+        public TrafficCometInternalHttpClient(HttpClient httpClient,
             IHttpRequestMessageSplunkFactory httpRequestMessageSplunkFactory,
             IHtttpCollectorResponseSplunkFactory htttpCollectorResponseFactory)
         {

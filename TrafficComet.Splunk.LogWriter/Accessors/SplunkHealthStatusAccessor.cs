@@ -2,12 +2,12 @@
 
 namespace TrafficComet.Splunk.LogWriter.Accessors
 {
-    internal class SplunkHttpCollectorHealthStatusAccessor
+    internal class SplunkHealthStatusAccessor
     {
         internal static bool IsHealthy { get; private set; }
         private static SemaphoreSlim Signal { get; }
 
-        static SplunkHttpCollectorHealthStatusAccessor()
+        static SplunkHealthStatusAccessor()
         {
             Signal = new SemaphoreSlim(1);
         }

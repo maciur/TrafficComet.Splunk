@@ -8,7 +8,7 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Writers
         void Write(string url, dynamic requestObject, string sourceName, string clientId,
                string traceId, IndexEventSplunkType indexEventSplunkType);
 
-        void Write(WebEventBodyDocument webEventBodyDocument, string sourceName, 
+        void Write(WebEventBodyDocument webEventBodyDocument, string sourceName,
             IndexEventSplunkType indexEventSplunkType);
     }
 }

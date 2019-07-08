@@ -5,7 +5,9 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
 using TrafficComet.Splunk.LogWriter.Documents;
+using TrafficComet.Splunk.LogWriter.Enums;
 using TrafficComet.Splunk.LogWriter.Extensions;
+using TrafficComet.Splunk.LogWriter.Helpers;
 
 namespace TrafficComet.Splunk.LogWriter.Factories
 {
@@ -23,10 +25,8 @@ namespace TrafficComet.Splunk.LogWriter.Factories
 
             var stringResponse = await httpContent.ReadAsStringAsync();
 
-            if (!string.IsNullOrEmpty(stringResponse))
+            if (JObjectHelper.TryParse(stringResponse, out JObject responseAsJObject))
             {
-                var responseAsJObject = JObject.Parse(stringResponse);
-
                 if (responseAsJObject == null || !responseAsJObject.HasValues)
                     throw new NullReferenceException(nameof(responseAsJObject));
 
@@ -40,7 +40,7 @@ namespace TrafficComet.Splunk.LogWriter.Factories
 
             return new HttpCollectorResponseDocument
             {
-                Code = INTERNAL_SERVER_ERROR_CODE
+                Code = (int)HttpCollectorResponseStatus.InternalServerError
             };
         }
 

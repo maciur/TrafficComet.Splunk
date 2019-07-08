@@ -1,7 +1,7 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Configuration;
 using System;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
-using TrafficComet.Splunk.LogWriter.Config;
+using TrafficComet.Splunk.LogWriter.Consts;
 using TrafficComet.Splunk.LogWriter.Documents;
 
 namespace TrafficComet.Splunk.LogWriter.Factories
@@ -9,15 +9,24 @@ namespace TrafficComet.Splunk.LogWriter.Factories
     public class IndexEventContainerDocumentFactory : IIndexEventContainerDocumentFactory
     {
         protected const string SOURCE_TYPE = "_json";
+        protected IConfiguration Configuration { get; }
+        protected virtual Func<string, string, string> CreateIndexName { get; set; }
 
-        protected IOptions<SplunkHttpCollectorConfig> HttpCollectorConfig { get; }
-
-        public IndexEventContainerDocumentFactory(IOptions<SplunkHttpCollectorConfig> httpCollectorConfig)
+        public IndexEventContainerDocumentFactory(IConfiguration configuration)
         {
-            if (httpCollectorConfig == null || httpCollectorConfig.Value == null)
-                throw new ArgumentNullException(nameof(httpCollectorConfig));
+            Configuration = configuration ??
+                throw new ArgumentNullException(nameof(configuration));
 
-            HttpCollectorConfig = httpCollectorConfig;
+            CreateIndexName = (indexName, prefix) =>
+            {
+                if (string.IsNullOrEmpty(indexName))
+                    throw new ArgumentNullException(nameof(indexName));
+
+                if (string.IsNullOrEmpty(prefix))
+                    throw new ArgumentNullException(nameof(prefix));
+
+                return $"{indexName}-{prefix}";
+            };
         }
 
         public IndexEventContainerDocument Create<TEventDocument>(TEventDocument eventDocument,
@@ -33,7 +42,7 @@ namespace TrafficComet.Splunk.LogWriter.Factories
 
             return new IndexEventContainerDocument
             {
-                Index = GetIndexName(HttpCollectorConfig.Value.Index, eventSplunkType),
+                Index = GetIndexName(eventSplunkType),
                 Time = time,
                 SourceType = SOURCE_TYPE,
                 Source = source,
@@ -41,21 +50,24 @@ namespace TrafficComet.Splunk.LogWriter.Factories
             };
         }
 
-        protected virtual string GetIndexName(string indexName, IndexEventSplunkType eventSplunkType)
+        protected virtual string GetIndexName(IndexEventSplunkType eventSplunkType)
         {
-            if (string.IsNullOrEmpty(indexName))
-                throw new ArgumentNullException(nameof(indexName));
+            if (CreateIndexName == null)
+                throw new NotImplementedException(nameof(CreateIndexName));
+
+            var indexName = Configuration.GetValue<string>(ConfigurationSelectors.HTTP_COLLECTOR_INDEX);
 
             switch (eventSplunkType)
             {
                 case IndexEventSplunkType.RequestBody:
-                    return $"{indexName}-{HttpCollectorConfig.Value.RequestsIndexPrefix}";
+                    return CreateIndexName(indexName, Configuration
+                        .GetValue<string>(ConfigurationSelectors.HTTP_COLLECTOR_REQUESTS_INDEX_PREFIX));
 
                 case IndexEventSplunkType.ResponseBody:
-                    return $"{indexName}-{HttpCollectorConfig.Value.ResponseIndexPrefix}";
+                    return CreateIndexName(indexName, Configuration
+                         .GetValue<string>(ConfigurationSelectors.HTTP_COLLECTOR_RESPONSES_INDEX_PREFIX));
 
-                default:
-                    return indexName;
+                default: return indexName;
             }
         }
     }

@@ -23,10 +23,10 @@ namespace TrafficComet.Splunk.LogWriter.Writers
 
 		public bool SaveLog(ITrafficLog trafficLog)
 		{
-			if (trafficLog == null)
-				throw new ArgumentNullException(nameof(trafficLog));
+            if (trafficLog == null)
+                throw new ArgumentNullException(nameof(trafficLog));
 
-			WebEventDocumentWriter.WriteDocumentAsync(trafficLog);
+            WebEventDocumentWriter.WriteDocumentAsync(trafficLog);
 
 			if (trafficLog.Request.Body != null)
 			{

@@ -1,7 +1,7 @@
 ﻿using System;
 using TrafficComet.Abstracts.Logs;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
-using TrafficComet.Splunk.LogWriter.Abstracts.Processor;
+using TrafficComet.Splunk.LogWriter.Abstracts.Queues;
 using TrafficComet.Splunk.LogWriter.Abstracts.Writers;
 
 namespace TrafficComet.Splunk.LogWriter.Writers
@@ -10,10 +10,10 @@ namespace TrafficComet.Splunk.LogWriter.Writers
     {
         protected IIndexEventContainerDocumentFactory IndexEventSplunkContractFactory { get; }
         protected IWebEventDocumentFactory WebEventDocumentFactory { get; }
-        protected ISplunkIndexEventProcessor SplunkIndexEventProcessor { get; }
+        protected IBackgroundWebEventsQueue BackgroundWebEventsQueue { get; }
 
         public WebEventDocumentWriter(IIndexEventContainerDocumentFactory indexEventSplunkContractFactory,
-            IWebEventDocumentFactory webEventDocumentFactory, ISplunkIndexEventProcessor splunkIndexEventProcessor)
+            IWebEventDocumentFactory webEventDocumentFactory, IBackgroundWebEventsQueue backgroundWebEventsQueue)
         {
             IndexEventSplunkContractFactory = indexEventSplunkContractFactory
                 ?? throw new ArgumentNullException(nameof(indexEventSplunkContractFactory));
@@ -21,8 +21,8 @@ namespace TrafficComet.Splunk.LogWriter.Writers
             WebEventDocumentFactory = webEventDocumentFactory
                 ?? throw new ArgumentNullException(nameof(webEventDocumentFactory));
 
-            SplunkIndexEventProcessor = splunkIndexEventProcessor
-                ?? throw new ArgumentNullException(nameof(splunkIndexEventProcessor));
+            BackgroundWebEventsQueue = backgroundWebEventsQueue
+                ?? throw new ArgumentNullException(nameof(backgroundWebEventsQueue));
         }
 
         public void WriteDocumentAsync(ITrafficLog trafficLog)
@@ -35,7 +35,7 @@ namespace TrafficComet.Splunk.LogWriter.Writers
             if (webEventDocument == null)
                 throw new NullReferenceException(nameof(webEventDocument));
 
-            SplunkIndexEventProcessor.ProcessIndexEvent(IndexEventSplunkContractFactory.Create(
+            BackgroundWebEventsQueue.Queue(IndexEventSplunkContractFactory.Create(
                 webEventDocument,
                 trafficLog.ApplicationId,
                 IndexEventSplunkType.WebEvent));

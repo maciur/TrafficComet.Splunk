@@ -4,115 +4,103 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 using System;
 using TrafficComet.Abstracts.Writers;
 using TrafficComet.Core;
+using TrafficComet.Splunk.LogWriter.Abstracts.Accessors;
 using TrafficComet.Splunk.LogWriter.Abstracts.Containers;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
 using TrafficComet.Splunk.LogWriter.Abstracts.Http;
-using TrafficComet.Splunk.LogWriter.Abstracts.Processor;
 using TrafficComet.Splunk.LogWriter.Abstracts.Queues;
 using TrafficComet.Splunk.LogWriter.Abstracts.Writers;
-using TrafficComet.Splunk.LogWriter.Config;
-using TrafficComet.Splunk.LogWriter.Consts;
+using TrafficComet.Splunk.LogWriter.Accessors;
 using TrafficComet.Splunk.LogWriter.Containers;
 using TrafficComet.Splunk.LogWriter.Extensions;
 using TrafficComet.Splunk.LogWriter.Factories;
 using TrafficComet.Splunk.LogWriter.Http;
-using TrafficComet.Splunk.LogWriter.Processor;
 using TrafficComet.Splunk.LogWriter.Queues;
 using TrafficComet.Splunk.LogWriter.Services;
+using TrafficComet.Splunk.LogWriter.Tasks;
 using TrafficComet.Splunk.LogWriter.Writers;
-using TrafficConfigurationSelectors = TrafficComet.Abstracts.Consts.ConfigurationSelectors;
 
 namespace TrafficComet.Splunk.LogWriter.Installer
 {
     public static class SplunkLogWriterInstaller
     {
-        public static IServiceCollection AddTrafficCometSplunkLogWriter(this IServiceCollection services,
-            IConfiguration configuration)
+        public static IServiceCollection AddTrafficCometSplunkHealthChecker(this IServiceCollection service)
         {
-            return services.AddTrafficCometSplunkLogWriter(configuration, false);
+            return service
+                .AddTransient<ITrafficCometSplunkCollectorHealthAccessor, TrafficCometSplunkHealthAccessor>()
+                .AddHostedService<TrafficCometSplunkHealthCheckerService>();
         }
 
-        public static IServiceCollection AddTrafficCometSplunkLogWriter(this IServiceCollection services,
+        public static IServiceCollection AddTrafficCometSplunk(this IServiceCollection services,
+            IConfiguration configuration)
+        {
+            return services.AddTrafficCometSplunk(configuration, false);
+        }
+
+        public static IServiceCollection AddTrafficCometSplunk(this IServiceCollection services,
             IConfiguration configuration, bool readTraceIdAndClientIfFromHeader)
         {
-            var splunkConfigSectionPath = string.Join(':', TrafficConfigurationSelectors.ROOT,
-                TrafficConfigurationSelectors.WRITERS, ConfigurationSelectors.SPLUNK);
-
-            var splunkConfigSection = configuration.GetSection(splunkConfigSectionPath);
-
-            if (splunkConfigSection == null)
-                throw new NullReferenceException(nameof(splunkConfigSection));
-
-            var splunkCollectorsConfigSection = splunkConfigSection.GetSection(ConfigurationSelectors.COLLECTORS);
-
-            if (splunkCollectorsConfigSection == null)
-                throw new NullReferenceException(nameof(splunkCollectorsConfigSection));
-
-            var httpCollectorSection = splunkCollectorsConfigSection.GetSection(ConfigurationSelectors.HTTP_COLLECTOR);
-
-            if (httpCollectorSection == null)
-                throw new NullReferenceException(nameof(httpCollectorSection));
-
-            services.AddTrafficComet(configuration, readTraceIdAndClientIfFromHeader);
-
-            services.AddHttpClient<ISplunkHttpCollectorClient, SplunkHttpCollectorClient>(client =>
-            {
-                var httpCollectorConfig = httpCollectorSection.Get<SplunkHttpCollectorConfig>();
-
-                if (httpCollectorConfig == null)
-                    throw new NullReferenceException(nameof(httpCollectorConfig));
-
-                client.BaseAddress = new Uri(httpCollectorConfig.Url);
-                client.AddSplunkAuthHeader(httpCollectorConfig.Token);
-            });
-
-            services.AddHttpClient<ISplunkHttpCollectorHealthClient, SplunkHttpCollectorHealthClient>(client =>
-            {
-                var httpCollectorConfig = httpCollectorSection.Get<SplunkHttpCollectorConfig>();
-
-                if (httpCollectorConfig == null)
-                    throw new NullReferenceException(nameof(httpCollectorConfig));
-
-                client.BaseAddress = new Uri(httpCollectorConfig.Url);
-            });
-
-            services.TryAddSingleton
-                <IHttpRequestMessageSplunkFactory, HttpRequestMessageSplunkFactory>();
-
-            services.TryAddSingleton
-                <IHtttpCollectorResponseSplunkFactory, HtttpCollectorResponseSplunkFactory>();
-
-            services.TryAddSingleton
-                <IWebEventDocumentFactory, WebEventDocumentFactory>();
-
-            services.TryAddSingleton
-                <IWebEventBodyDocumentFactory, WebEventBodyDocumentFactory>();
-
-            services.TryAddSingleton
-                <IIndexEventContainerDocumentFactory, IndexEventContainerDocumentFactory>();
-
-            services.TryAddTransient<ITrafficLogWriter, SplunkLogWriter>();
-
-            services.TryAddTransient<IWebEventDocumentWriter, WebEventDocumentWriter>();
-
-            services.TryAddTransient<IWebEventBodyDocumentWriter, WebEventBodyDocumentWriter>();
-
-            services.TryAddTransient<ISplunkIndexEventProcessor, SplunkIndexEventProcessor>();
-
-            services.TryAddTransient<ISplunkHttpClientDependenciesContainer, SplunkHttpClientDependenciesContainer>();
-
-            services.AddHostedService<ExecutorSaveLogTasksHostedService>();
-
-            services.AddHostedService<SplunkHttpCollectorHealthCheckerHostedService>();
-
-            services.AddSingleton<IBackgroundSaveLogTasksQueue, BackgroundSaveLogTasksQueue>();
-
             return services
-                .Configure<ExecutorSaveLogTasksConfig>(splunkConfigSection
-                    .GetSection($"{ConfigurationSelectors.HOSTED_SERVICES}:{ConfigurationSelectors.EXECUTOR}"))
-                .Configure<SplunkFolderCollectorConfig>(splunkCollectorsConfigSection
-                    .GetSection(ConfigurationSelectors.FOLDER_COLLECTOR))
-                .Configure<SplunkHttpCollectorConfig>(httpCollectorSection);
+                .AddTrafficComet(configuration, readTraceIdAndClientIfFromHeader)
+                .AddHttpClients(configuration)
+                .AddWriters()
+                .AddFactories()
+                .AddContainers()
+                .AddSaveTasks()
+                .AddBackgroundElements();
+        }
+
+        private static IServiceCollection AddBackgroundElements(this IServiceCollection service)
+        {
+            return service
+                .AddSingleton<IBackgroundWebEventsQueue, BackgroundWebEventsQueue>()
+                .AddHostedService<TrafficCometSaveEventTasksExecutorService>();
+        }
+
+        private static IServiceCollection AddContainers(this IServiceCollection service)
+        {
+            service.TryAddTransient<ISplunkHttpClientDependenciesContainer, SplunkHttpClientDependenciesContainer>();
+            return service;
+        }
+
+        private static IServiceCollection AddFactories(this IServiceCollection service)
+        {
+            service.TryAddSingleton<IHttpRequestMessageSplunkFactory, HttpRequestMessageSplunkFactory>();
+            service.TryAddSingleton<IHtttpCollectorResponseSplunkFactory, HtttpCollectorResponseSplunkFactory>();
+            service.TryAddSingleton<IWebEventDocumentFactory, WebEventDocumentFactory>();
+            service.TryAddSingleton<IWebEventBodyDocumentFactory, WebEventBodyDocumentFactory>();
+            service.TryAddSingleton<IIndexEventContainerDocumentFactory, IndexEventContainerDocumentFactory>();
+
+            return service
+                .AddTransient<IIndexEventContainerDocumentFactory, IndexEventContainerDocumentFactory>()
+                .AddTransient<IHttpRequestMessageSplunkFactory, HttpRequestMessageSplunkFactory>();
+        }
+
+        private static IServiceCollection AddHttpClients(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddHttpClient<ITrafficCometInternalHttpClient, TrafficCometInternalHttpClient>(configuration, true,
+                TimeSpan.FromMinutes(1));
+
+            services.AddHttpClient<ITrafficCometInternalHealthHttpClient, TrafficCometInternalHealthHttpClient>
+                (configuration, timeout: TimeSpan.FromMinutes(1));
+
+            return services;
+        }
+
+        private static IServiceCollection AddSaveTasks(this IServiceCollection service)
+        {
+            return service
+                .AddTransient<WebEventHttpSaveTask>()
+                .AddTransient<WebEventExceptionSaveTask>()
+                .AddTransient<WebEventFileSaveTask>();
+        }
+
+        private static IServiceCollection AddWriters(this IServiceCollection services)
+        {
+            services.TryAddTransient<ITrafficLogWriter, SplunkLogWriter>();
+            services.TryAddTransient<IWebEventDocumentWriter, WebEventDocumentWriter>();
+            services.TryAddTransient<IWebEventBodyDocumentWriter, WebEventBodyDocumentWriter>();
+            return services;
         }
     }
 }

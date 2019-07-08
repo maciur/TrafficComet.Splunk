@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFramework>netcoreapp2.1</TargetFramework>
-    <Version>2.8.0</Version>
+    <Version>2.10.0</Version>
     <Company>Maciej Kacprzak</Company>
     <Copyright>Maciej Kacprzak</Copyright>
     <PackageLicenseUrl>https://github.com/maciur/TrafficComet.Splunk</PackageLicenseUrl>
@@ -15,8 +15,8 @@
     <PackageReleaseNotes>TrafficComet.Splunk.LogWriter</PackageReleaseNotes>
     <PackageRequireLicenseAcceptance>False</PackageRequireLicenseAcceptance>
     <Authors>TrafficComet.Splunk.LogWriter</Authors>
-    <AssemblyVersion>2.8.0.0</AssemblyVersion>
-    <FileVersion>2.8.0.0</FileVersion>
+    <AssemblyVersion>2.10.0.0</AssemblyVersion>
+    <FileVersion>2.10.0.0</FileVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
