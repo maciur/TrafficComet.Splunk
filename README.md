@@ -32,10 +32,8 @@ public class Startup
   "TrafficComet": {
     "Writers": {
       "Splunk": {
-        "HostedServices": {
-          "Executor": {
-            "TasksAtOnce": 10
-          }
+        "Services": {
+          "EventsAtOnce": 10
         },
         "Collectors": {
           "Http": {
@@ -44,8 +42,8 @@ public class Startup
             "HealthEndPoint": "services/collector/health",
             "Token": "Token from Splunk Http Collector",
             "Index": "Name of index where all logs will be stored",
-            "RequestsIndexPrefix": "request",
-            "ResponseIndexPrefix": "response"
+            "RequestsIndexPrefix": "requests",
+            "ResponseIndexPrefix": "responses"
           },
           "Folder": {
             "Path": "Where Traffic Coment will save json log files when Splunk or Http Collector is down",
