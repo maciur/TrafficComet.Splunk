@@ -44,7 +44,7 @@ public class Startup
             "Token": "Token from Splunk Http Collector",
             "Index": "Name of index where all logs will be stored",
             "RequestsIndexPrefix": "requests",
-            "ResponseIndexPrefix": "responses"
+            "ResponsesIndexPrefix": "responses"
           },
           "Folder": {
             "Path": "Where Traffic Coment will save json log files when Splunk or Http Collector is down",
@@ -68,7 +68,7 @@ public class Startup
 Create a new 3 indexes in Splunk: 
   - Root index - index should have same name like value in Splunk.Collectors.Http.Index property from config file, 
   - Second index for requests logs - {index-root-name}-{value from RequestsIndexPrefix from config file} 
-  - Third index for responses logs - {index-root-name}-{value from ResponseIndexPrefix from config file} 
+  - Third index for responses logs - {index-root-name}-{value from ResponsesIndexPrefix from config file} 
 
 ### HEC
 Create and configure HEC in Splunk https://docs.splunk.com/Documentation/Splunk/7.2.3/Data/UsetheHTTPEventCollector
