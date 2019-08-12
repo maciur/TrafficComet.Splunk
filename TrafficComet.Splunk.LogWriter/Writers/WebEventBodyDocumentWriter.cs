@@ -25,30 +25,30 @@ namespace TrafficComet.Splunk.LogWriter.Writers
                 ?? throw new ArgumentNullException(nameof(backgroundWebEventsQueue));
         }
 
-        public void Write(string url, dynamic requestObject, string sourceName, string clientId,
+        public void Write(string url, dynamic requestObject, string applicationId, string clientId,
             string traceId, IndexEventSplunkType indexEventSplunkType)
         {
-            ValidateParams(url, requestObject, sourceName, clientId, traceId);
+            ValidateParams(url, requestObject, applicationId, clientId, traceId);
 
             var webEventBodyDocument = WebEventBodyDocumentFactory
-                .Create(url, requestObject, clientId, traceId);
+                .Create(url, requestObject, clientId, traceId, applicationId);
 
-            Write(webEventBodyDocument, sourceName, indexEventSplunkType);
+            Write(webEventBodyDocument, applicationId, indexEventSplunkType);
         }
 
-        public void Write(WebEventBodyDocument webEventBodyDocument, string sourceName, IndexEventSplunkType indexEventSplunkType)
+        public void Write(WebEventBodyDocument webEventBodyDocument, string applicationId, IndexEventSplunkType indexEventSplunkType)
         {
             if (webEventBodyDocument == null)
                 throw new ArgumentNullException(nameof(webEventBodyDocument));
 
-            if (string.IsNullOrEmpty(sourceName))
-                throw new ArgumentNullException(nameof(sourceName));
+            if (string.IsNullOrEmpty(applicationId))
+                throw new ArgumentNullException(nameof(applicationId));
 
             BackgroundWebEventsQueue.Queue(IndexEventSplunkContractFactory
-                .Create(webEventBodyDocument, sourceName, indexEventSplunkType));
+                .Create(webEventBodyDocument, applicationId, indexEventSplunkType));
         }
 
-        protected void ValidateParams(string url, dynamic requestObject, string sourceName,
+        protected void ValidateParams(string url, dynamic requestObject, string applicationId,
             string clientId, string traceId)
         {
             if (string.IsNullOrEmpty(url))
@@ -57,8 +57,8 @@ namespace TrafficComet.Splunk.LogWriter.Writers
             if (requestObject == null)
                 throw new ArgumentNullException(nameof(requestObject));
 
-            if (string.IsNullOrEmpty(sourceName))
-                throw new ArgumentNullException(nameof(sourceName));
+            if (string.IsNullOrEmpty(applicationId))
+                throw new ArgumentNullException(nameof(applicationId));
 
             if (string.IsNullOrEmpty(clientId))
                 throw new ArgumentNullException(nameof(clientId));

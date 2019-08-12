@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using TrafficComet.Splunk.LogWriter.Abstracts.Queues;
 using TrafficComet.Splunk.LogWriter.Consts;
+using TrafficComet.Splunk.LogWriter.Documents;
 using TrafficComet.Splunk.LogWriter.Enums;
 using TrafficComet.Splunk.LogWriter.Extensions;
 using TrafficComet.Splunk.LogWriter.Tasks;
@@ -52,7 +53,7 @@ namespace TrafficComet.Splunk.LogWriter.Services
             ApplicationLifetime = applicationLifetime
                 ?? throw new ArgumentNullException(nameof(applicationLifetime));
 
-            ApplicationLifetime.ApplicationStopping.Register(OnApplicationStopping);
+            ApplicationLifetime.ApplicationStopping.Register(ApplicationStopping);
 
             Logger = logger
                 ?? throw new ArgumentNullException(nameof(logger));
@@ -76,8 +77,14 @@ namespace TrafficComet.Splunk.LogWriter.Services
             }
         }
 
-        protected void CreateNewSaveTasks(int howManyEventsTasks, ref IList<WebEventSaveTask> saveTasks)
+        protected void CreateNewSaveTasks(int howManyEventsTasks, ref IList<WebEventSaveTask> saveTasks, Type saveTaskType)
         {
+            if (saveTaskType == null)
+                throw new ArgumentNullException(nameof(saveTaskType));
+
+            if (saveTasks == null)
+                saveTasks = new List<WebEventSaveTask>();
+
             if (howManyEventsTasks > 0)
             {
                 var indexEvents = WebEventsQueue.Dequeue(howManyEventsTasks);
@@ -85,7 +92,7 @@ namespace TrafficComet.Splunk.LogWriter.Services
                 {
                     foreach (var indexEvent in indexEvents)
                     {
-                        var saveTask = ServiceProvider.GetService<WebEventHttpSaveTask>();
+                        var saveTask = ServiceProvider.GetService(saveTaskType) as WebEventSaveTask;
                         saveTask.LoadIndexEvent(indexEvent);
 
                         if (saveTask.Status != WebEventSaveTaskStatus.Ignore)
@@ -105,7 +112,10 @@ namespace TrafficComet.Splunk.LogWriter.Services
 
                 try
                 {
-                    CreateNewSaveTasks(EventsAtOnes, ref saveTasks);
+                    var httpCollectorTurnOff = Configuration.GetBool(ConfigurationSelectors.HTTP_COLLECTOR_TURN_OFF);
+                    var saveTaskType = httpCollectorTurnOff ? typeof(WebEventFileSaveTask) : typeof(WebEventHttpSaveTask);
+
+                    CreateNewSaveTasks(EventsAtOnes, ref saveTasks, saveTaskType);
 
                     while (saveTasks.SafeAny())
                     {
@@ -132,27 +142,22 @@ namespace TrafficComet.Splunk.LogWriter.Services
             }
         }
 
-        private void OnApplicationStopping()
+        private void ApplicationStopping()
         {
             while (WebEventsQueue.Count > 0)
             {
                 var indexEvents = WebEventsQueue.Dequeue(20);
-                Parallel.ForEach(indexEvents, indexEvent =>
-                {
-                    try
-                    {
-                        var saveTask = ServiceProvider.GetService<WebEventFileSaveTask>();
-                        if (saveTask != null)
-                        {
-                            saveTask.LoadIndexEvent(indexEvent);
-                            saveTask.SaveLog();
-                        }
-                    }
-                    catch
-                    {
-                        // do nothing with it.
-                    }
-                });
+                Parallel.ForEach(indexEvents, indexEvent => GracefulSaveLog(indexEvent));
+            }
+        }
+
+        private void GracefulSaveLog(IndexEventContainerDocument indexEvent)
+        {
+            var saveTask = ServiceProvider.GetService<WebEventFileSaveTask>();
+            if (saveTask != null)
+            {
+                saveTask.LoadIndexEvent(indexEvent);
+                saveTask.SaveLog();
             }
         }
     }

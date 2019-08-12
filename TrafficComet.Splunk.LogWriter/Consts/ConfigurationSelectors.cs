@@ -11,6 +11,7 @@ namespace TrafficComet.Splunk.LogWriter.Consts
 
         #region Http Collector
         internal readonly static string HTTP_COLLECTOR = $"{COLLECTORS}:Http";
+        internal static readonly string HTTP_COLLECTOR_TURN_OFF = $"{HTTP_COLLECTOR}:TurnOff";
         internal readonly static string HTTP_COLLECTOR_ENDPOINT = $"{HTTP_COLLECTOR}:EndPoint";
         internal readonly static string HTTP_COLLECTOR_HEALTH_ENDPOINT = $"{HTTP_COLLECTOR}:HealthEndPoint";
         internal readonly static string HTTP_COLLECTOR_INDEX = $"{HTTP_COLLECTOR}:Index";

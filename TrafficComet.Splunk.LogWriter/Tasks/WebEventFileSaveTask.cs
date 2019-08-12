@@ -30,7 +30,7 @@ namespace TrafficComet.Splunk.LogWriter.Tasks
             };
 
             CreateLogFileName = (string sourceName) => $"{Guid.NewGuid()}-{sourceName}.json";
-            SerializeLog = (indexEvent, settings) => JsonConvert.SerializeObject(indexEvent, settings);
+            SerializeLog = (indexEvent, settings) => JsonConvert.SerializeObject(indexEvent.Event, settings);
             Encoding = Encoding.UTF8;
         }
 

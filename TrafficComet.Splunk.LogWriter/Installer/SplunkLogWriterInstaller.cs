@@ -97,7 +97,7 @@ namespace TrafficComet.Splunk.LogWriter.Installer
 
         private static IServiceCollection AddWriters(this IServiceCollection services)
         {
-            services.TryAddTransient<ITrafficLogWriter, SplunkLogWriter>();
+            services.TryAddTransient<ITrafficLogWriter, TrafficCometSplunkLogWriter>();
             services.TryAddTransient<IWebEventDocumentWriter, WebEventDocumentWriter>();
             services.TryAddTransient<IWebEventBodyDocumentWriter, WebEventBodyDocumentWriter>();
             return services;

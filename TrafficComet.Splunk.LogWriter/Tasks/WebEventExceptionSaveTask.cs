@@ -11,6 +11,13 @@ namespace TrafficComet.Splunk.LogWriter.Tasks
         {
         }
 
+        public bool SaveLog()
+        {
+            var exception = new TrafficCometFailedSaveWebEventException(WebEvent);
+            Logger.LogError(exception, exception.Message);
+            return true;
+        }
+
         protected override ValueTask<bool> SaveTaskAsync()
         {
             var exception = new TrafficCometFailedSaveWebEventException(WebEvent);

@@ -9,7 +9,7 @@ using TrafficComet.Splunk.LogWriter.Extensions;
 
 namespace TrafficComet.Splunk.LogWriter.Factories
 {
-	public class WebEventDocumentFactory : IWebEventDocumentFactory
+    public class WebEventDocumentFactory : IWebEventDocumentFactory
 	{
 		public WebEventDocument Create(ITrafficLog trafficLog)
 		{
@@ -18,7 +18,8 @@ namespace TrafficComet.Splunk.LogWriter.Factories
 
 			var webEventDocument = new WebEventDocument
 			{
-				TraceId = trafficLog.TraceId,
+                Source = trafficLog.ApplicationId,
+                TraceId = trafficLog.TraceId,
 				CustomParams = trafficLog.CustomParams.ToDocuments()
 			};
 

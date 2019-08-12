@@ -150,7 +150,7 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Http
                 throw new ArgumentNullException(nameof(requestBody));
 
             WebEventBodyDocument webEventDocument = Dependencies.WebEventBodyDocumentFactory
-                .Create(fullUrl, requestBody, clientId, traceId);
+                .Create(fullUrl, requestBody, clientId, traceId, SourceName);
 
             if (webEventDocument == null)
                 throw new NullReferenceException(nameof(webEventDocument));
