@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using TrafficComet.Splunk.LogWriter.Abstracts.Containers;
 using TrafficComet.Splunk.LogWriter.Abstracts.Contents;
+using TrafficComet.Splunk.LogWriter.Abstracts.Exceptions;
+using TrafficComet.Splunk.LogWriter.Abstracts.Extensions;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
 using TrafficComet.Splunk.LogWriter.Documents;
 
@@ -83,8 +84,8 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Http
 
                 if (!ignoreRequest && !string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(traceId))
                 {
-                    WriteDocument(CreateRequestWebEventDocument(httpRequestMessage,
-                        requestObject, clientId, traceId), IndexEventSplunkType.RequestBody);
+                    var webEventDoc = CreateRequestWebEventDocument(httpRequestMessage, requestObject, clientId, traceId);
+                    Dependencies.WriteDocument(webEventDoc, IndexEventSplunkType.RequestBody, SourceName);
                 }
 
                 httpRequestMessage.Content = new JsonContent(requestObject);
@@ -93,27 +94,7 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Http
             return SendJsonAsync<TResponse>(httpRequestMessage, clientId, traceId);
         }
 
-        protected virtual WebEventBodyDocument AddRequestHeaders<THeaders>(WebEventBodyDocument webEventDocument, THeaders headers)
-            where THeaders : HttpHeaders
-        {
-            if (webEventDocument == null)
-                throw new ArgumentException(nameof(webEventDocument));
-
-            if (headers != null && headers.Any())
-            {
-                webEventDocument.CustomParams = headers.Where(x => !IgnoreHeaders.Contains(x.Key.ToLowerInvariant()))
-                    .Select(x => new KeyValueDocument
-                    {
-                        Name = x.Key,
-                        Value = x.Value.FirstOrDefault()
-                    }).ToArray();
-            }
-
-            return webEventDocument;
-        }
-
-        protected abstract HttpRequestMessage CreateBaseHttpRequestMessage(HttpMethod httpMethod,
-                    string url);
+        protected abstract HttpRequestMessage CreateBaseHttpRequestMessage(HttpMethod httpMethod, string url);
 
         protected virtual WebEventBodyDocument CreateRequestWebEventDocument(HttpRequestMessage httpRequestMessage,
             dynamic requestBody, string clientId, string traceId)
@@ -155,10 +136,10 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Http
             if (webEventDocument == null)
                 throw new NullReferenceException(nameof(webEventDocument));
 
-            return AddRequestHeaders(webEventDocument, headers);
+            return webEventDocument.AddRequestHeaders(headers, IgnoreHeaders);
         }
 
-        protected async Task<TValue> HandleJsonResponseAsync<TValue>(HttpResponseMessage httpResponseMessage, bool ignoreRequest = false)
+        protected async Task<TValue> HandleJsonResponseAsync<TValue>(HttpResponseMessage httpResponseMessage)
         {
             if (httpResponseMessage == null)
                 throw new NullReferenceException(nameof(httpResponseMessage));
@@ -177,29 +158,26 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Http
             if (httpRequestMessage == null)
                 throw new ArgumentNullException(nameof(httpRequestMessage));
 
-            var responseHttpMessage = await HttpClient.SendAsync(httpRequestMessage);
-
-            if (responseHttpMessage == null)
-                throw new NullReferenceException(nameof(responseHttpMessage));
-
-            var responseObject = await HandleJsonResponseAsync<TResponse>(responseHttpMessage);
-
-            if (!ignoreRequest && responseObject != null && !string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(traceId))
+            using (var responseHttpMessage = await HttpClient.SendAsync(httpRequestMessage))
             {
-                WriteDocument(
-                    CreateResponseWebEventDocument(responseHttpMessage, responseObject,
-                        httpRequestMessage.RequestUri.ToString(), clientId, traceId), IndexEventSplunkType.ResponseBody);
+                if (responseHttpMessage == null)
+                    throw new NullReferenceException(nameof(responseHttpMessage));
+
+                if (!responseHttpMessage.IsSuccessStatusCode)
+                    throw await TrafficCometSplunkHttpException.CreateAsync(httpRequestMessage, responseHttpMessage);
+
+                var responseObject = await HandleJsonResponseAsync<TResponse>(responseHttpMessage);
+
+                if (!ignoreRequest && responseObject != null && !string.IsNullOrEmpty(clientId) && !string.IsNullOrEmpty(traceId))
+                {
+                    var webResponseEventDoc = CreateResponseWebEventDocument(responseHttpMessage, responseObject,
+                            httpRequestMessage.RequestUri.ToString(), clientId, traceId);
+
+                    Dependencies.WriteDocument(webResponseEventDoc, IndexEventSplunkType.ResponseBody, SourceName);
+                }
+
+                return responseObject;
             }
-
-            return responseObject;
-        }
-
-        protected virtual void WriteDocument(WebEventBodyDocument webEventDocument, IndexEventSplunkType indexEventSplunkType)
-        {
-            if (webEventDocument == null)
-                throw new ArgumentNullException(nameof(webEventDocument));
-
-            Dependencies.WebEventBodyDocumentWriter.Write(webEventDocument, SourceName, indexEventSplunkType);
         }
     }
 }
