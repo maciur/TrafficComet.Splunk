@@ -7,7 +7,7 @@ namespace TrafficComet.Splunk.LogWriter.Factories
     public class WebEventBodyDocumentFactory : IWebEventBodyDocumentFactory
     {
         public WebEventBodyDocument Create(string fullUrl, dynamic requestBody,
-            string clientId, string traceId, string applicationId)
+            string clientId, string traceId, string sourceName)
         {
             if (string.IsNullOrEmpty(fullUrl))
                 throw new ArgumentNullException(nameof(fullUrl));
@@ -21,8 +21,8 @@ namespace TrafficComet.Splunk.LogWriter.Factories
             if (string.IsNullOrEmpty(traceId))
                 throw new ArgumentNullException(nameof(traceId));
 
-            if (string.IsNullOrEmpty(applicationId))
-                throw new ArgumentNullException(nameof(applicationId));
+            if (string.IsNullOrEmpty(sourceName))
+                throw new ArgumentNullException(nameof(sourceName));
 
             return new WebEventBodyDocument
             {
@@ -30,7 +30,7 @@ namespace TrafficComet.Splunk.LogWriter.Factories
                 ClientId = clientId,
                 TraceId = traceId,
                 Body = requestBody,
-                Source = applicationId
+                Source = sourceName
             };
         }
     }

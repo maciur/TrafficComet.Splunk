@@ -5,17 +5,18 @@ using System;
 using TrafficComet.Abstracts.Writers;
 using TrafficComet.Core;
 using TrafficComet.Splunk.LogWriter.Abstracts.Accessors;
-using TrafficComet.Splunk.LogWriter.Abstracts.Containers;
 using TrafficComet.Splunk.LogWriter.Abstracts.Factories;
 using TrafficComet.Splunk.LogWriter.Abstracts.Http;
 using TrafficComet.Splunk.LogWriter.Abstracts.Queues;
+using TrafficComet.Splunk.LogWriter.Abstracts.Readers;
 using TrafficComet.Splunk.LogWriter.Abstracts.Writers;
 using TrafficComet.Splunk.LogWriter.Accessors;
-using TrafficComet.Splunk.LogWriter.Containers;
 using TrafficComet.Splunk.LogWriter.Extensions;
 using TrafficComet.Splunk.LogWriter.Factories;
 using TrafficComet.Splunk.LogWriter.Http;
+using TrafficComet.Splunk.LogWriter.Http.Handlers;
 using TrafficComet.Splunk.LogWriter.Queues;
+using TrafficComet.Splunk.LogWriter.Readers;
 using TrafficComet.Splunk.LogWriter.Services;
 using TrafficComet.Splunk.LogWriter.Tasks;
 using TrafficComet.Splunk.LogWriter.Writers;
@@ -45,9 +46,9 @@ namespace TrafficComet.Splunk.LogWriter.Installer
                 .AddHttpClients(configuration)
                 .AddWriters()
                 .AddFactories()
-                .AddContainers()
                 .AddSaveTasks()
-                .AddBackgroundElements();
+                .AddBackgroundElements()
+                .AddMessageHandlers();
         }
 
         private static IServiceCollection AddBackgroundElements(this IServiceCollection service)
@@ -55,12 +56,6 @@ namespace TrafficComet.Splunk.LogWriter.Installer
             return service
                 .AddSingleton<IBackgroundWebEventsQueue, BackgroundWebEventsQueue>()
                 .AddHostedService<TrafficCometSaveEventTasksExecutorService>();
-        }
-
-        private static IServiceCollection AddContainers(this IServiceCollection service)
-        {
-            service.TryAddTransient<ISplunkHttpClientDependenciesContainer, SplunkHttpClientDependenciesContainer>();
-            return service;
         }
 
         private static IServiceCollection AddFactories(this IServiceCollection service)
@@ -72,6 +67,7 @@ namespace TrafficComet.Splunk.LogWriter.Installer
             service.TryAddSingleton<IIndexEventContainerDocumentFactory, IndexEventContainerDocumentFactory>();
 
             return service
+                .AddTransient<IHttpContentReader, JsonHttpContentReader>()
                 .AddTransient<IIndexEventContainerDocumentFactory, IndexEventContainerDocumentFactory>()
                 .AddTransient<IHttpRequestMessageSplunkFactory, HttpRequestMessageSplunkFactory>();
         }
@@ -95,8 +91,17 @@ namespace TrafficComet.Splunk.LogWriter.Installer
                 .AddTransient<WebEventFileSaveTask>();
         }
 
+        private static IServiceCollection AddMessageHandlers(this IServiceCollection service)
+        {
+            return service
+                .AddTransient<RequestMessageHandler>()
+                .AddTransient<ResponseMessageHandler>();
+        }
+
         private static IServiceCollection AddWriters(this IServiceCollection services)
         {
+            services.TryAddTransient<IHttpRequestMessageLogWriter, HttpRequestMessageLogWriter>();
+            services.TryAddTransient<IHttpResponseMessageLogWriter, HttpResponseMessageLogWriter>();
             services.TryAddTransient<ITrafficLogWriter, TrafficCometSplunkLogWriter>();
             services.TryAddTransient<IWebEventDocumentWriter, WebEventDocumentWriter>();
             services.TryAddTransient<IWebEventBodyDocumentWriter, WebEventBodyDocumentWriter>();

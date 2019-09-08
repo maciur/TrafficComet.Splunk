@@ -5,6 +5,6 @@ namespace TrafficComet.Splunk.LogWriter.Abstracts.Factories
     public interface IWebEventBodyDocumentFactory
 	{
 		WebEventBodyDocument Create(string fullUrl, dynamic requestBody,
-			string clientId, string traceId, string applicationId);
+			string clientId, string traceId, string sourceName);
 	}
 }

@@ -36,12 +36,13 @@ namespace TrafficComet.Splunk.LogWriter.Http
             if (indexEventContract == null)
                 throw new ArgumentNullException(nameof(indexEventContract));
 
-            var httpResponseMessage = await SendJsonAsync(HttpMethod.Post, url, indexEventContract);
+            using (var httpResponseMessage = await SendJsonAsync(HttpMethod.Post, url, indexEventContract))
+            {
+                if (httpResponseMessage == null)
+                    throw new NullReferenceException(nameof(httpResponseMessage));
 
-            if (httpResponseMessage == null)
-                throw new NullReferenceException(nameof(httpResponseMessage));
-
-            return await ReadJsonResponseAsync(httpResponseMessage);
+                return await ReadJsonResponseAsync(httpResponseMessage);
+            }
         }
 
         protected virtual Task<HttpCollectorResponseDocument> ReadJsonResponseAsync(HttpResponseMessage httpResponseMessage)

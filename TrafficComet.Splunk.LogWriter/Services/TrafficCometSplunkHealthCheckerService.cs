@@ -39,7 +39,7 @@ namespace TrafficComet.Splunk.LogWriter.Services
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                bool httpCollectorTurnOff = default(bool);
+                bool httpCollectorTurnOff = default;
 
                 try
                 {

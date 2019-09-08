@@ -3,13 +3,25 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.IO.Compression;
+using System.Net.Http;
 using TrafficComet.Core;
 using TrafficComet.Splunk.LogWriter.Installer;
-using TrafficComet.WebApiTest.Mocks;
 
 namespace TrafficComet.WebApiTest
 {
+    public class SplunkHttpClient
+    {
+        public HttpClient HttpClient { get; }
+
+        public SplunkHttpClient(HttpClient httpClient)
+        {
+            HttpClient = httpClient
+                ?? throw new ArgumentNullException(nameof(httpClient));
+        }
+    }
+
 	public class Startup
 	{
 		public Startup(IConfiguration configuration)
@@ -26,7 +38,8 @@ namespace TrafficComet.WebApiTest
 			services.AddTrafficCometSplunk(Configuration);
             services.AddTrafficCometSplunkHealthChecker();
             services.Configure<GzipCompressionProviderOptions>((opts) => opts.Level = CompressionLevel.Optimal);
-            services.AddHttpClient<MockSplunkHttpClient>();
+            services.AddHttpClient<SplunkHttpClient>().AddSplunkHandlers("splunk-http-client");
+
 			services.AddResponseCompression((opts) =>
 			{
 				opts.EnableForHttps = true;

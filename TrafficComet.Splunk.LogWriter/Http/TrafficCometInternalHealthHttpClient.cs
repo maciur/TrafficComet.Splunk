@@ -37,14 +37,15 @@ namespace TrafficComet.Splunk.LogWriter.Http
             if (string.IsNullOrEmpty(collectorHealthEndPoint))
                 throw new NullReferenceException(nameof(collectorHealthEndPoint));
 
-            var httpResponseMessage = await HttpClient.GetAsync(collectorHealthEndPoint);
+            using (var httpResponseMessage = await HttpClient.GetAsync(collectorHealthEndPoint))
+            {
+                if (httpResponseMessage == null)
+                    throw new NullReferenceException(nameof(httpResponseMessage));
 
-            if (httpResponseMessage == null)
-                throw new NullReferenceException(nameof(httpResponseMessage));
-
-            return await (httpResponseMessage.StatusCode == HttpStatusCode.OK
-                ? HttpCollectorResponseFactory.CreateSuccessResponse(httpResponseMessage.Content)
-                : HttpCollectorResponseFactory.CreateFailureResponse(httpResponseMessage.Content));
+                return await (httpResponseMessage.StatusCode == HttpStatusCode.OK
+                    ? HttpCollectorResponseFactory.CreateSuccessResponse(httpResponseMessage.Content)
+                    : HttpCollectorResponseFactory.CreateFailureResponse(httpResponseMessage.Content));
+            }
         }
 
         public void CancelPendingRequests()
