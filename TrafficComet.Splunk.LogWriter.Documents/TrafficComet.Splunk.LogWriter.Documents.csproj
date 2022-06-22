@@ -11,6 +11,6 @@
     <Description>Plugin for TrafficComet to use Splunk as storage for traffic logs</Description>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 </Project>
